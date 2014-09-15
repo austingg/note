@@ -1,0 +1,52 @@
+I am try to implement free-hand sketching(it should look like a pencil). I did some research and surprised there is so little info about this on the internet. Thebset information I got was by drawing photoshop and observing the result. I think Photoshop works something similar like this:
+1) Each brush has its own pixel map, telling what opacity has each pixel.
+2) Setting(like weight, color) apply to this pixel map before drawing.
+3)But I think it also some kind of transformation to the patter, because line does not look regular.
+
+*********************************************
+Gradient fill algorithm
+
+Most of the ones I've seen simply add a factor of the difference between the starting and ending color, with the factor being determined  by the number of gradeint steps.
+
+Nothing fancy, but they look fine, depending on the number of step you perform.
+
+Second was coded by me when I needed a gradient distribution of colour in x and y direction. I know that it is a BFT(Brute Force Technique) and is not efficient. One can speed up by using BitBlt, But it is far from satisfactory.
+
+If you come across more efficient method, please let me know.
+
+
+*************************************************
+design pattern
+
+The flattenable interface allows an object to serialize itself out to a byte-buffer and an array of file descriptors.
+
+SKFlattenable is the based class for objects that need to be flattenable into a data stream for either transport or as part of the key to the font cache.
+
+
+
+***************************************************
+Android 2D graphics pipeline
+
+If no Rasterizer has been set then the default rasterization process is used:
+
+1. The Path is scan-converted based on parameter from the paint and the path to produce an initial mask. 
+   Pixels "inside" the Path will become opaque, those "outside" will be left transparent, and those on the boundary my become partially transparent(for anti-aliasing). The mask will end up containing an opaque silhoette of the object. 
+2. If there is a mask Filter set, then the initial mask
+
+
+Shading is the process of determining the "source colour" for each pixeels.
+
+The actual implementation doesn't use a bitmap, but rather uses a function that maps(x, y)to an ARGB colour for the given pixel.
+
+**************************************************************
+In computer graphics, a colour gradient(sometimes called color ramp or color progression) specifies a range of position-dependent colors, usually used to fill a region.
+
+An axial color gradient(sometimes also called a linear color gradient) is specified by two points, and a color at each point. The colors along the lien through those points are calculated using linear interpolation, then extended perpendicular to that line. 
+
+a radial gradient is specified as a circle that has one color at the edge and other at the center. colors are calculated by linear interpolation based on distance from the center.
+
+
+**************************************************************
+SDL does not ship with any built-in mechanism for drawing or filling circles. This tutorial wihil show you a method for accomplishing each task without using trigonometry.
+
+for drawing circles we will use the midpoint circle algorithm, while for filling circles we will manipulate the formula for the radius of an arc;
