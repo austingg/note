@@ -156,5 +156,54 @@ The roundness jitter works the same way as the roundness from the brush tip shap
 Scattering
 with the scatter the position of your brush tip is randomized around its original position. If both Axis is enabled very single brush mark will be randomly scattered around a certain radius depending on the scatter. If both axis is disabled it will only scatter in the right angle from your line. If you choose a control for scatter you must set it higher than 0%, otherwise it won't do anything.
 
-The 
+where d represents the direction perpendicular to the stroke orientation. d = O - pi/2;
 
+
+The mark-making techniques used in these commercial programs are not published but as far as I can tell, all of them are 2D stamp or sweep based.
+
+
+
+Acylic graph for input/output mapping
+
+
+this will require some developer manpower, and a lot of testing, but should hopefully be unenventful for end-user.
+
+
+****************************************************
+
+This opens the main Brushes panel, the big brother of the Brush Preset picker we saw earlier. To select a brush, simply click on its icon. Scroll down the list to your newly created brush and click on its icon to select it if it's not selected already.
+
+In the real world, if you were to paint with an actual brush, the brush would lay down a continuous coat of paint on the paper, but that's not how photoshop works.
+Instead, Photoshop "stamps" the document with your brush tip as you drag your mouse. If the stamps appera close enough together, it creates the illusion of a seamless brush stroke, but if the stamps are spaced to far apart form each other, the individual stamp become obvious and the stroke appear ridged. But in most cases, a seamless brush stroke is more desirable.
+
+
+*******************************************************
+OpenGL pipeline blending
+
+When blending is active, the input colors from the fragments processor does not merely overwrite the corresponding value currently in the output buffer, but 
+instead combined together based on a function.
+
+The fragment shader can write a number of colors. These colors are mapped to particular images in the framebuffer via glDrawBuffers. Blending happens independently on each fragment shader output value.
+
+Blending must be enabled with a call glEnablei(GL_BLEND, i), where i is an integer representing the buffer to enable blending on. Each buffer being written to by a fragment shader can hava blending separately enabled disabled.
+
+When blending is disabled to a buffer, the color from the fragment shader will directly be written to that buffer.
+
+When computing the output color, two equations are used. one for the RGB portion of the output color, and one for the alpha of the output color. This is useful is you want to do something like blending the source and dest colors but take the source alpha as the fragment out produced it.
+
+The two equations are set with this function:
+void glBlendEquationSeparate(GLenum modeRGB, GLnum modeAlpha)
+
+The possible equations are as follows:
+GL_FUNC_ADD: The source and destination colors are added to eacheother.
+The s and d blending parameters are multiplied into each of S and D before addtition.
+GL_FUNC_SUBTRACT: subtracts the destination from the source.
+GL_FUNC_REVERSE_SUBTRACT: subtracts the source form the destination.
+
+GL_MIN、GL_MAX
+
+
+The traditional alpha blend is set up as follows;
+
+glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);

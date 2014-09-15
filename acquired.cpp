@@ -1529,5 +1529,350 @@ int lineByte = (width*biBitCount/8+3)/4*4)更好数方法来处理，四舍五�
 
 int lineByte = (width * biBitCount/8 + 3)>>2 << 2
 
+//fifo queue
+struct fifo_item
+{
+	struct fifo_item *next; /*queue is a single-linked list */
+	void *padload;
+}
+
+struct fifo
+{
+	struct fifo_item *first;   // first pushed item
+	struct fifo_item *last; 	// last pushed item
+	int item_count;
+}
+
+struct fifo* fifo_new(void)
+{
+	struct fifo *ret = (struct fifo*) malloc(sizeof(struct fifo));
+	
+	ret->first = NULL;
+	ret->last = NULL;
+	ret->item_count = 0;
+	
+	return ret;
+}
 
 
+void fifo_free(struct fifo* queue, FifoUserFreeFunction user_free)
+{
+	struct fifo_item *item;
+	
+	while((item = queue->first) != NULL))
+	{
+		queue->first = item->next;
+		user_free(item);
+	}
+	
+	free(queue);
+}
+
+void fifo_push(struct fifo* queue, void* data)
+{
+	struct fifo_item *item =  (struct fifo_item*)malloc(sizeof(struct fifo_item));
+	
+	item->next = NULL;
+	item->payload = data;
+	
+	if(!queue->last)
+		queue->first = item;
+	else
+		queue->last->next = item;
+	queue->last = item;
+}
+
+void *fifo_pop(struct fifo* queue)
+{
+	struct fifo_item *item;
+	void *data;
+	
+	item = queue->first;
+	if(!item)
+		return NULL;
+	
+	queue->first = item->next;
+	
+	if(!queue->first)
+		queue->last = NULL;
+	
+	data = item->payload;
+	
+	free(item);
+	queue->item_count--;
+	
+	return data;
+}
+
+
+size_t remove_duplicate_tiles(TileIndex *array, size_t length)
+{
+	if(length < 2)
+	{
+		return length;
+	}
+	
+	size_t new_length = 1;
+	size_t i, j;
+	
+	for(i = 1; i < length; i++)
+	{
+		for(j = 0; j < new_length; j++)
+		{
+			if(tile_equal(array[j], array[i])
+				break;
+		}
+		if(j == new_length)
+		{
+			array[new_length++] = array[i];
+		}
+	}
+	
+	return new_length;
+}
+
+
+#ifndef TILE_MAP_H
+#define TILE_MAP_H
+
+typedef struct
+{
+	int x;
+	int y;
+}TileIndex;
+
+
+
+typedef void (*TileMapItemFreeFunc)(void *item_data);
+
+
+typedef struct
+{
+	void **map;
+	int size;
+	
+	size_t item_size;
+	TileMapItemFreeFunc item_free_func;	
+}TileMap;
+
+
+TileMap* tile_map_new(int size, size_t item_size, TileMapItemFreeFunc)
+{
+	TileMap *self = (TileMap *)malloc(sizeof(TileMap));
+	
+	self->size = size;
+	self->item_size = item_size;
+	self->item_free_func = item_free_func;
+	
+	const int map_size = 2*self->item_size*self->item_size;
+	
+	self->map = malloc(map_size*self->item_size);
+	
+	for(int i = 0; i < map_size; i++)
+		self->map[i] = NULL;
+	
+	return self;
+}
+
+void tile_map_free(TileMap *self, gboolean free_items)
+{
+	const int map_size = 2*self->size*2*self->size;
+	
+	if(free_items)
+	{
+		for(int i = 0; i < map_size; i++)
+			self->item_free_func(self->map[i]);
+	}
+	
+	free(self->map);
+	
+	free(self);
+}
+float clamp(float x, float low, float high)
+{
+	return x>high? high:(x < low)? low: x;
+}
+//returns true if the surface was modified
+gboolean draw_dab_internal(MyPaintTiledSurface* self, float x, float y, float radius, float color_r, float color_b, float color_g, float opaque, float hardness,
+	float color_a, float aspect_ratio, float angle,
+	float lock_alpha, float colorize)
+{
+	OperationDataDrawDab op_struct;
+	OperationDataDrawDab *op = &op_struct;
+	
+	op->x = x;
+	op->y = y;
+	op->radius = radius;
+	op->angle = angle;
+	op->opaque = clamp(opaque, 0.0f, 1.0f);
+	op->hardness = clamp(hardness, 0.0f, 1.0f);
+	
+	op->lock_alpha = clamp(lock_alpha, 0.0f, 1.0f);
+	op->colorize = clamp(colorize, 0.0f, 1.0f);
+	
+	if(op->radius < 0.1f) return FALSE;
+	if(op->hardness == 0.0f) return FALSE;
+	if(op->opaque == 0.0f) return FALSE;
+	
+	color_r = clamp(color_r, 0.0f, 1.0f);
+	color_g = clamp(color_g, 0.0f, 1.0f);
+	color_b = clamp(color_b, 0.0f, 1.0f);
+	color_a = clamp(color_a, 0.0f, 1.0f);
+	
+	op->color_r = color_r * (1 << 15);
+	op->color_g = color_g * (1 << 15);
+	op->color_b = color_b * (1 << 15);
+	op->color_a = color_a;
+	
+	op->normal = 1.0f;
+	
+	op->normal *= 1.0f-op->lock_alpha;
+	op->normal *= 1.0f-op->colorize;
+	
+	if(op->aspect_ratio < 1.0f) op->aspec_ratio = 1.0f;
+	
+	float r_fringe = radius + 1.0f;
+	
+	int tx1 = floor(floor(x-r_fringe)
+	/MYPAINT_TILE_SIZE);
+
+	int tx2 = floor(floor(x+r_fringe)/MYPAINT_TILE_SIZE);
+	
+	int ty1 = floor(floor(x-r_fringe)/MYPAINT_TILE_SIZE);
+	
+	int ty2 = floor(floor(x+r_fringe)/MYPAINT_TILE_SIZE);
+	
+	for(int ty = ty1; ty <= ty2; ty++)
+		for(int tx = tx1; tx <= tx2; tx++)
+			{
+				const TileIndex tile_index = {tx, ty};
+				OperationDataDrawDab *op_copy = (OperationDataDrawDab *)malloc(sizeof(OperationDataDrawDab);
+	
+				*op_copy = *op;
+	
+				operation_queue_add(self->operation_queue, tile_index, op_copy);
+			}
+	
+	update_dirty_bbox(self, op);
+	
+	return TRUE;
+}
+
+
+void **tile_map_get(TileMap *self, TileIndex index)
+{
+	const int rowstride = self->size*2;
+	const int offset = ((self->size + index.y)*rowstride) + self->size + index.x;
+	
+	assert(offset < 2*self->size*2*self->size);
+	assert(offset >= 0);
+	
+	return self->map + offset;
+}
+
+void draw_dab_pixels_BlendMode_Normal(uint16_t *mask, uint16_t *rgba, uint16_t color_r, uint16_t color_g, uint16_t *color_b, uint16_t opacity)
+{
+	
+	while(1)
+	{
+		for(; mask[0]; mask++, rgba += 4)
+		{
+			uint32_t opa_a = mask[0]*(uint32_t)opacity/(1<<15);
+			uint32_t opa_b = (1<<15) - opa_a;
+			
+			rgba[3] = opa_a + opa_b*rgba[3];
+			rgba[0] = (opa_a*color_r + opa_b*rgba[0])/(1<<15);
+			rgba[1] = (opa_a*color_g + opa_b*rgba[1])/(1<<15);
+			
+			rgba[2] = (opa_a*color_b + opa_b*rgba[2])/(1<<15);
+		}
+		if(!mask[1]) break;
+		
+		rgba += mask[1];
+		mask += 2;
+	}
+}
+
+//convert matrix to/from other structures(without copying the data)
+Mat image_alias = image;
+float *Idata = new float[480*640*3];
+Mat I(480, 640, CV_32FC3, Idata);
+
+vector<Point> iptVec(10);
+Mat iP(iptvec);
+
+//For some operations a more convenient algebraic notation can be used
+
+Mat delta = (j.t() + lambda*Mat::eye(J.cols, J.cols, J.type()).inv(CV_SVD)*(J.t()*err);
+
+//implements the core of Levenberg-Marquardt optimization algorithm.
+
+typedef void (*SplitFunc)(const uchar* src, uchar **dst, int len, int cn);
+
+static SplitFunc getSplitFunc(int depth)
+{
+	static SplitFunc splitTab[] =
+	{
+		(SplitFunc)GET_OPTIMIZED(split8u), (SplitFunc)GET_OPTIMIZED(split8u)
+	}
+	
+	return splitTab[depth];
+}
+
+// 将变量存储为数组
+	const Mat* arrays[] = {&src, &mask, 0};
+
+	
+//As a picture worth thousands words.
+// on low pressure some hair rubs the canvas to reveal its texture, while on high pressure, the mix brush engine created a more consistent color, near to an impasto.
+	
+// Brushlib expects the dabs to be put directly to the surface(aka "incremental" mode). There is code to calculate the dab opacity needed to achieve a desired stroke opacity by rendering may overlapping
+	
+	
+y = log(gamma + x)*m + q;
+
+gamma: parameter set by the user(small means logrithmic mapping, big linear)
+m, q: parameter to scale and translate the curve
+
+
+//anti-aliasing attempt(works surprisingly well for ink brush)
+
+float current_fadeout_in_pixels = radius*(1.0-hardness);
+float min_fadeout_in_pixels = self->settings_value[MPAINT_BRUSH_SETTING_ANTI_ALIASING];
+
+if(current_fadeout_in_pixels < min_fadeout_in_pixels)
+{
+	float current_optical_radius = radius - (1.0 - hardness)*radius/2.0f;
+	
+	float hardness_new = (current_optical_radius-min_fadeout_in_pixels/2.0)
+}
+
+uint32_t SD_Canvas_New(uinit32_t ibitmap)
+{
+	SDCANVAS* pSDCanvas = (SDCANVAS*)malloc(sizeof(SDCANVAS));
+	pSDCANVAS->pBitmp = (SDBITMAP*)ibitmap;
+	
+	return (uint32_t)pSDCanvas;
+}
+
+uint32_t SD_Bitmap_New(int w, int h)
+{
+	SDBITMAP *pSDBmp = (SDBITMAP*)malloc(sizeof(SDBITMAP));
+	
+	int i;
+	pSDBmp->nWidht = w;
+	pSDBmp->nHeight = h;
+	pSDBmp->bLock = MFalse;
+	pSDBmp->pImg = (MUInt32*)malloc(w*h*sizeof(MUInt32));
+	
+	memset(pSDBmp->pImg, 0, w*h*sizeof(MUInt32));
+	
+	return (uint32_t)pSDBmp;
+}
+
+
+uint32_t SD_GetPixel_Raw(uint32_t icanvas, int x, int y, uint32_t pUserdata)
+{
+	SDCANVAS* pSDCanvas = (SDCANVAS*)icanvas;
+	return (uint32_t)pSDCanvas->pBitmap->pImg;
+}
