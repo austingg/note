@@ -129,7 +129,8 @@ enum Transforms
 	KRecStaysRect_Shift;
 }
 
-
+/* SkNoncopyable is the base class for objects that may do not want to be copied. It hides its copy-constructor and its assignment and operator.
+	*/
 class SK_API SkNoncopyable
 {
 public:
@@ -141,3 +142,195 @@ private:
 }
 
 //在一个类中将父类定义为INHERITED，这样就更加清楚逻辑关系了
+
+
+class SKI_API SkBaseDevice : public SkRefCnt
+{
+public:
+	SK_DECLEAR_INST_COUNT(SkBaseDevice);
+	
+	SkBaseDevice();
+	
+	SkBaseDevice(const SkDeviceProperties &deviceProperties);
+	
+	virtual ~SkBaseDevice();
+	
+	SkBaseDevice* createCompatibleDevice(const SkImageInfo&);
+	
+	SkMetaData& getMetaData();
+	
+	virtual const SkDeviceProperties& getDeviceProperties()const
+	{
+		return fLeakyProperties;
+	}
+	
+	virtual SkImageInfo imageInfo()const;
+	
+	
+	int width() const
+	{
+		return this->imageInfo().width();
+	}
+	
+	int height() const
+	{
+		return this->imageInof().height();
+	}
+	
+	bool isOpaque() const
+	{
+		return this.ImageInof().isOpaque();
+	}
+	
+	const SkBitmap& accessBitmap(bool changePixels);
+	
+	bool writePixels(const SkimageInfo& const void*, size_t rowBytes, int x, int y);
+	
+	void* accessPixels(SkImageInfo* info, size_t rowBytes);
+	
+	virtual void drawPaint(const SkDraw&, const SkPaint& paint) = 0;
+	
+	virtual void drawPoints(const SkDraw&, SkCanvas::PointMode, size_t count, const SkPoint[], const SkPaint& paint) = 0;
+	
+	virtual void drawRect(const SkDraw&, const SkRect& r, const SkPaint& paint) = 0;
+	
+	}
+	
+}
+
+class SkDraw
+{
+public:
+	SkDraw();
+	SkDraw(const SkDraw& src);
+	
+	void drawPaint(const SkPaint&)const;
+	void drawPoints(SkCanvas::PointMode, size_t count, const SkPaint&, bool forceUseDevice);
+	
+	void drawRect(cosnt SkRect&, const SkPaint&) const;
+}
+
+
+
+struct SkMask
+{
+	enum Format
+	{
+		kBW_Format,   // 1 bit per pixel mask(e.g. monochrome)
+		kA8_Format,   // 8bits per pixel mask(e.g. anti-aliasing)
+		k3D_Format,   // 3 8bits per pixel planes: alpha, mul, add
+		
+		kARGB32_Format,
+		kLCD16_Format,
+		kLCD32_Format
+	}
+	
+	enum
+	{
+		kCoutMaskFormat = LCD32_Format + 1;
+	}
+	
+	uint8_5* 	fImage;
+	SkIRect		fBountds;
+	uint32_t 	fRowBytes;
+	Format 		fFormat;
+}
+
+class SkAutoMaskFreeImage
+{
+public:
+	SkAutoMaskFreeImage(uint8_t* maskImage)
+	{
+		fImage = maskImage;
+	}
+	
+	~SkAutoMaskFreeImage()
+	{
+		SkMask::FreeImage(fImage);
+	}
+	
+	private:
+	uint8_t* fImage;
+}
+
+void SkDraw::drawBitMap(const SkBitmap& bitmap, const Skmatrix& prematrix, const SkPaint& origPaint) const
+{
+	SkDEBUGCODE(this->validate());
+	
+	//nothing to draw
+	if(fRC->isEmpty() || bitmap.width() == 0 || bitmap.height() == 0 || bitmap.colorType() == kUnknown_SkColorType) return;
+	
+	SkPaint paint(origPaint);
+	paint.setStyle(SkPaint::kFille_Style);
+	
+	SkMatrix matrix;
+	matrix.setConcat(*fMatrix, prematrix);
+	
+	if(clipped_out(matrix, *fRC, bitmap.width(), bitmap.height()) 
+		return;
+	
+	if(bitmap.colorType() != kAlpha_8_SkColorType && just_translate(matrix, bitmap))
+	{
+		SkAutoLockPixels alp(bitmap);
+		if (!bitmap.readyToDraw()) return;
+	}
+	
+	SkDraw draw(*this);
+	
+	draw.fMatrix = &matrix;
+	if(bitmap.colorType() == kAlpha_8_SkColorType)
+	{
+		draw.drawBitmapAsMask(bitmap, paint);
+	}
+	else
+	{
+		SkAutoBitmapShaderInstall install(bitmap, paint);
+		SkRect r;
+		r.set(0, 0, SkIntToScalar(bitmap.width()), SkIntoToScalar(bitmap.height());
+		draw.drawRect(r, install.paintWithShader);
+	}
+}
+
+// very similar with Netherlands national flag
+template<typename T, typename C>
+static T* SkTQSort_Partition(T* left, T*right, T*pivot, C lessThan)
+{
+	T pivotValue = *pivot;
+	SkTSwap(*pivot, *right);
+	T* newPivot = left;
+	
+	while(left < right)
+	{
+		if(lessThan(*left, pivotValue)
+		{
+			SkTSwap(*left, *newPivot);
+			newPivot += 1;
+		}
+		left += 1;
+	}
+	
+	SkTSwap(*right, *newPivot);
+	
+	return newPivot;
+}
+
+
+int count = 1;
+char current = s[0];
+for(int i = 0; i < s.Length; i++)
+{
+	if(current == s[i])
+		count++;
+	else
+	{
+		sb.AppendFormat("{0}{1}", count, current);
+		count = 1;
+		current = s[i];
+	}	
+}
+sb.AppendFormat("{0}{1}", count, current);
+return;
+
+
+
+

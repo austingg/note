@@ -50,3 +50,71 @@ a radial gradient is specified as a circle that has one color at the edge and ot
 SDL does not ship with any built-in mechanism for drawing or filling circles. This tutorial wihil show you a method for accomplishing each task without using trigonometry.
 
 for drawing circles we will use the midpoint circle algorithm, while for filling circles we will manipulate the formula for the radius of an arc;
+
+
+********************************************************
+be about to
+
+
+
+SkMatrix   SkRegion  SkIRect SkRect
+SkBillter   SkMask   SkClipStack   SkString
+SkSort    SkTArray
+
+
+********************************************************
+Pen and Brush Options
+
+pen and brush shapes can be stored in a pixel array that identifies the array of pixel positions that are to be set along the line path. To avoid setting pixels more than once in the frame buffer, we can simply accumulate the horizontal spans generated at each position of the mask and keep track of the beginning and ending x positions for the spans across each scan line.
+
+
+
+********************************************************
+Skia is organized around the Canvas object. It is the host for the "draw" calls: drawRect, drawPath, drawText, etc. Each of these has two components: the primitive being drawn(SkRect, SkPath, etc.) and color/style attributes(SkPaint);
+
+canvas.drawRect(rect, paint);
+
+The paint holds much of the state describing how the rectangle(in this case) is drawn: what color it is, if it is filled or stroked, how it should blend with what was previously drawn.
+
+The canvas holds relative little state. It points to the actual pixels being drawn(hosted by a Bitmap), and it maintains a stack of matrices and clips. Thus in the above call, the canvas' current matrix may transform the coordinates of the rectangle(translation, rotation, skewing, perspective), and the canvas' current clip may restrict where on the canvas the rectangle will be drawn, but all other stylistic attributes of the drawing are controlled by the paint.
+
+
+Anytime you draw something in Skia, and want to specify what color it is, or how it blends with the background, or what style or font to draw it in you specify those attributes in a paint.
+
+Unlike SkCanvas, paints do not maintain an internal stack of state(i.e. there is no save / restore on a paint). However, paint are reletively light weight, so the client may create and maintain any number of paint objects, each setup for a particular use. 
+
+SkPaint paint1, paint2, paint3;
+
+paint1.setColor(0xFFFF0000);
+paint1.setStyle(SkPaint::kStroke_Style);
+
+paint2.setColor(0x8000FF00);
+paint2.setStyle(SkPaint::kFill_Style);
+
+
+SkShader* shader = SkGradientShader::CreateLinear(....);
+paint.setShader(shader);
+shader->unref();
+
+anything drawn with that paint will be drawn with the gradient specified in the call to CreateLinear(). The Shader object that is returned is reference-counted. Whenever any effects object, like a shader, is assigned to paint, its reference-count increased by the paint. To balance this, the caller in the above example call unref() on the shader once it has assigned to the paint. Now the paint is the only owner of that shader, and it will automatically call unref() on the shader when either the paint goes out the scope, or if another shader(or null) is assigned to it.
+
+
+SkGradientShader hosts factories for creating subclasses of SkShader that render linear and radial gradients.
+
+
+SkBlitter and its subclasses are responsible for actually writing pixels into memory. Besides efficiency, they handle clipping and antialiasing.
+
+
+blit a pattern of pixels defined by a rectangle-clipped mask
+virtual void blitMask(const SkMask&, const SkIRect& clip);
+
+
+SkXfermode is the base class for objects that are called to implement custom "transfer-modes" in the drawing pipeline. The static function Create(Modes) can be called to return an instance of any of the predefined subclass as specified in the modes enum. When an SkXfermode is assigned to an SkPaint, then objects drawn with that paint have the xfermode applied.
+
+SkRecord(REC-ord)represents a sequence of SkCanvas calls, saved for future use. These future use may include: replay, optimization, serialization or combinations of those.
+
+SkRecorder provides an SkCanvas interface for recording into an SkRecord.
+
+Shading is the process of determining the "source colors" for each pixel. A color consist of alpha, red, green, and blue components. At a high level, the output of the shader can be thought of as a virtual image containing the source colors: the source image. The actual implementation doesn't use a bitmap, but rather uses a function that maps from(x, y) to an ARGB color for the given pixel, and this function is only called for coordinates where the corresponding pixel may be altered by the source color. This is really just an optimization, however.
+
+The shader does not get the mask, the path, or the destination image as inputs.

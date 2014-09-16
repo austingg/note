@@ -1,0 +1,4 @@
+this overview is based on reading what little documentation exists(often between the lines).
+
+
+Rasterization is the process of determining the set of pixels that will be drawn to. This is accomplished by generating a “mask”, which is a alpha-channel image. Opaque (0xFF) pixels on this mask indicate areas we want to draw to at “full strength”, transparent (0x00) areas are areas we don't want to draw to at all, and partially transparent areas will be drawn to at “partial strength”. This is explained more at the end of the final phase. (When visualizing this process I find that it helps to think of opaque as white and transparent as black.)
