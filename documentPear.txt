@@ -118,3 +118,32 @@ SkRecorder provides an SkCanvas interface for recording into an SkRecord.
 Shading is the process of determining the "source colors" for each pixel. A color consist of alpha, red, green, and blue components. At a high level, the output of the shader can be thought of as a virtual image containing the source colors: the source image. The actual implementation doesn't use a bitmap, but rather uses a function that maps from(x, y) to an ARGB color for the given pixel, and this function is only called for coordinates where the corresponding pixel may be altered by the source color. This is really just an optimization, however.
 
 The shader does not get the mask, the path, or the destination image as inputs.
+
+***********************************************************
+in addition to the coordinate list, can you get timestamps?
+That might let you darken the runs when the user was drawing slowly or hesitating.
+
+fair enough, it's pen-like. But as I said, should be easy to convert brush-like.
+
+
+A pastel preset would use a continuous fiber-pressed paper like perpaer ingres simulated by this kind of pattern, a squary brush mask simulate the foot print of a pastel block. 
+
+The pattern seams to react just as a alpha mask acting in addition to the brush mask.
+
+In a computer system, a blitter is a circuit, sometimes as a coprocessor or a logic block on microprocessor, that is dedicated to the rapid movement and modification fo data within that computer's memory. a blitter is capable of copying large quantities of data from one memory are to another relatively quickly, and in parallel with the cpu.
+
+The name comes from BLIT, which is not a acronym but is often interpreted as Block Image Transfer. A typical used for a blitter is the movement of a bitmap, such as windows and fonts in a graphical user interface or sprites and backgrounds in a 2D computer game.
+
+1. Artistic thresholding
+2. State of the Art: A taxonomy of Artistic stylization techniques for image and video
+3. Topology-driven vetorization of clean line drawing
+4. Adaptive vectorization of line drawing images.
+
+******************************************************
+
+Gradient primitive
+
+
+The most common parameterization are linear, radial and polar.
+
+if possible, there should be a graduation in user-invovement.

@@ -333,4 +333,60 @@ return;
 
 
 
+/**
+	Gives method bitmap should be read to implement a shader. Also determines number and interpretation of extra parameter returned also as a Bitmap;
+*/
+enum BitmapType
+{
+	KNone_BitmapType, // shader is not represented as a bitmap;
+	kDefault_BitmapType, // Acess bitmap using local coords transformed by matrix.
+	kRadial_BitmapType,  // Acess bitmap by transforming local coordinates by the matrix and taking the distance of result from(0, 0)as bitmap column, Bitmap is 1 pixel tall.
+	kSweeo_BitmapType
+}
+
+
+virtual BitmapType asABitmap(SkBitmap* outTexture, SkMatrix* out matixt, TileMode xy[2]]);
+
+
+enum GradientType
+{
+	kNone_GradientType, 
+	kColor_GradientType,
+	kLinear_GradientType,
+	kRadial_GradientType,
+	kRadial2_GradientType,
+	kSweep_GradientType,
+	kConcial_GradientType,
+	kLast_GradientType = kConical_GradientType
+}
+
+struct GradientInfo
+{
+	int fColorCount;
+	
+	SkColor* fColors;
+	SkScalar* fColorOffsets;
+	SkPoint fPoint[2];
+	SkScalar fRadius[2];
+	TileMode fTileMode;
+	
+	uint32_t fGradientFlags;
+};
+
+virtual GradientType asAGraident(GradientInfo* info) const;
+
+
+/**
+*   If the shader subclass is composed of the two shader,  return ture, and if rec is not null, fill it out with info about the shader.
+*
+*   These are bare pointer; the ownership and reference count are unchanged.
+
+*/
+
+struct ComposeRec
+{
+	const SkShader* fShaderA;
+	const SkShader* fShaderB;
+	const SkXfermode* fMode;
+}
 
