@@ -1,4 +1,4 @@
-I am try to implement free-hand sketching(it should look like a pencil). I did some research and surprised there is so little info about this on the internet. Thebset information I got was by drawing photoshop and observing the result. I think Photoshop works something similar like this:
+I am try to implement free-hand sketching(it should look like a pencil). I did some research and surprised there is so little info about this on the internet. The best information I got was by drawing photoshop and observing the result. I think Photoshop works something similar like this:
 1) Each brush has its own pixel map, telling what opacity has each pixel.
 2) Setting(like weight, color) apply to this pixel map before drawing.
 3)But I think it also some kind of transformation to the patter, because line does not look regular.
@@ -147,3 +147,83 @@ Gradient primitive
 The most common parameterization are linear, radial and polar.
 
 if possible, there should be a graduation in user-invovement.
+
+*******************************************************
+Depth buffer
+
+Enabling depth buffering
+
+in order to use depth buffering, the following must occur:
+
+The current framebuffer, whether an FBO or the default framebuffer, must have a depth buffer.
+
+depth testing must be enabled. This is done by calling glEnable(GL_DEPTH_TEST). By default depth testing is disabled when you create the GL context;
+
+the depth function should be set with glDepthFunc. We recommend glDepthFunc(GL_LEQUAL)where LEQUAL means less or equal.
+
+the depth mask is set with glDepthMask. By default, this is GL_TRUE which means writing to the depth buffer is enable.
+
+**********************************************************
+The RBF interpolation relies on solution of a LSE Ax = b of the size M*M 
+in principle, where M is a number of the data processed. However, in visualization applications it is many times and even for already computed value, the computation of f(x) is too expensive. Therefor it is reasonable to significantly reduce the dimensionality of the LSE Ax = b. Of course, we are now changing the the interpolation property of the RBF to approximation, i.e. the values computed do not pass the given values exactly.
+
+*******************************
+Tone mapping 
+
+Tone mapping is a technique used in image processing and computer graphics to map one set of color to another.
+
+
+
+**********************************************
+Enlarging an image (upsampling or interpolating) zooming 
+
+
+Polyharmonic splines are used for function approximation and data interpolation. They are useful for interpolation of scatter data in many dimensions. A special case is thin plane splines.
+
+
+Main disadvantages are:
+1. To determine the weights, a linear system of equations must be solved, which is non-sparse. The solution of a non-space linear system becomes no longer practical if the dimension n is larger as about 1000(since the storage requirements are O(n^2) and the number of operations to solve the linear system is O(n^3). For example n = 10000 requires about 100Mbyte of storage and 1000G flops of operations.
+
+2. To perform the interpolation of M data points requires operations in the order of O(M*N). In many applications, like image processing. M is much larger than N, and if both numbers are large, this is no longer practical.
+
+Recently, method have been developed to overcome the aforementioned difficulties. For example Beatson present a method to interpolate polyharmonic splines at one point in 3 dimension in O(log(n)) instead of O(n).
+
+
+Lanczos resampling or Lanczos filter is a mathmatical formula used to smoothly  interpolate the value of a digital signal between its samples. It maps each sample of the given signal to translated and scaled copy of the Lanczos kernel, which is a sinc funcion windowed by the central hump of a dilated sinc function.
+
+Inverse distance weighting
+
+Inverse Distance Weight is a type of deterministic method for multivariate interpolation with a known scattered set of points. The assigned values to unknown points are calculated with a weighted average of the value available at he known points.
+
+the name given to this type of methods was motivated by the weighted average applied since it resorts to the inverse of the distance to each known point(amount of the proximity) when assign weights.
+
+
+
+
+
+
+*************************************************************************
+Linear Algebra
+Trigonometry
+
+approximation theory
+
+
+The LU-decomposition used in this example is generic, direct solver that doesn't scale well as the size of the matrices grow large: it is O(N^3). For large sets of control points, there are optimized(and much more complicated)methods for solving the thin palte spline problem(or more generally, RBF or Radial Basis Function interpolation). They are based on iterative numerical solvers(like Gauss-Sediel or the conjugate gradient method) and the assumption that the effect of the control points is mainly local(i.e. only a few neighboring control points contribute majority to interpolating a given point). These approximations scale well, in the order of O(NlogN)(albeith with pretty high constraints).
+
+For a good, readable introduction to these methods(preconditining, Krylov subsapce method, fast multipole algorithm)see: "Radias basis functions: theory and implementations" by Martin Dietrich Buhmann.
+
+The RBF interpolation is not separable and it is based on distance of two points. It leads to a solution of Linear system of Equations(LSE) Ax=b. There are two main groups of interpolating functions: global and local. Application of local function, called compactly supporting RBF(CSFBF), can significantly decrease computational cost as they lead to a system of linear equations with s sparse matrix.
+
+
+SVD method has very high numerical robustness, but this robustness has its price both in space and in time. If you don't expect a degenrated case , you can have much lighter methods that should be able to run on x86.
+
+
+In applied mathematics and theoretical computer science, combinatorial
+optimization is a topic that consists of finding an optimal object from a
+finite set of objects. In many such problems, exhaustive search is not
+feasible.
+
+
+Specific problems
+Assignment problem

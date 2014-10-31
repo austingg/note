@@ -390,3 +390,311 @@ struct ComposeRec
 	const SkXfermode* fMode;
 }
 
+GLenum checkForError(char* loc)
+{
+	GLenum errCode;
+	const GLubyte *errString;
+	
+	if((errCode == glGetError() != GL_NO_ERROR)
+	{
+		errString = glutErrorString(errCode);
+		printf("OpenGL error: %s", errString);
+		
+		if(loc != NULL)
+			printf("(%s)", loc);
+		printf("\n");
+	}
+	
+	return errCode;
+}
+
+
+#if defined WIN32 || defined WINCE
+#include <windows.h>
+#undef small
+#undef min
+#undef max
+#undef abs
+#endif
+
+#ifdef _OPENMP
+#define HAVE_OPENMP
+
+#ifdef _APPLE_
+#define HAVE_GCD
+
+#if define _MSC_VER && _MSC_VER >= 1600
+#define HAVA_CONCURRENCY
+
+
+
+
+https://www.cs.duke.edu/courses/cps124/spring04/notes/13_npr/mit.pdf
+	https://www.cs.duke.edu/courses/cps124/spring04/notes/13_npr/cmu.pdf
+	
+	
+double getPSNR(const Mat& I1, const Mat& I2)
+{
+	Mat s1;
+	absdiff(I1, I2, s1);
+	
+	s1.convertTo(s1, CV_32F);
+	s1 = s1.mul(s1);
+	
+	Scalar s = sum(s1);
+	
+	double sse = s.val[0] + s.val[1] + s.val[2];
+	
+	if (sse <= le-10)
+		return 0;
+	else
+	{
+		double mse = sse / (double)(I1.channels() * I1.total());
+		
+		double psnr = 10.0*log10(255*255)/mse);
+		return psnr;
+	}
+}
+
+
+
+#ifndef DBZHANG_HELLO_
+#define DBZHANG_HeLLO_
+
+#if define _WIN32
+	#if LIBHELLO_BUILD
+		#define LIBHELLO_API __declspec(dllexport)
+	#else 
+		#define LIBHELLO_API __declspec(dllimport)
+	#endif
+#else
+	#define LIBHELLO_API
+#endif
+
+LIBHELLO_API void hello(const char* name);
+#endif
+
+
+
+#ifdef FLANN_EXPORT
+#undef FLANN_EXPORT
+#endif
+
+#ifdef WIN32
+/* win32 dll export/import directives*/
+#ifdef FLANN_EXPORTS
+	#define FLANN_EXPORT __declspec(dllexport)
+#elif defined(FLANN_STATIC)
+	#define FLANN_EXPORT
+#else
+	#define FLANN_EXPORT __declspec(dllimport)
+#endif
+
+#else
+/* unix needs nothing */
+#define FLANN_EXPORT
+#enfif
+
+#ifdef FLANN_DEPECATED
+#undef FLANN_DEPECATED
+#endif
+
+#if (defined _M_X64 && defined _MSC_VER && _MSC_VER > 1400)||
+	__GNUC__ >= 4 && defined __x86_64__)
+	#if defined WIN32
+		#include <intrin.h>
+	#endif 
+	#if defined __SSE2__ || !defined __GNUC_
+		#include <emmintrin.h>
+	#endif
+#endif
+
+#if defined __BORLANDC__
+	#include <fastmath.h>
+#else 
+	#include <math.h>
+#endif
+
+#ifdef HAVE_IPL
+	#ifndef __IPL_H_
+		#if defined WIN32 || defined _WIN32
+			#include <ipl.h>
+		#else
+			#include <ipl/ipl.h>
+		#endif
+	#endif
+#elif defined __IPL_H__
+	#define HAVE_IPL
+#endif
+
+#if defined WIN32 || defined _WIN32
+	#define CV_CDECL __cdecl
+	#define CV_STDCALL __stdcall
+#else
+	#define CV_CDECL
+	#define CV_STDCALL
+#endif
+
+#ifndef CV_EXTEN_C
+#ifdef __cplusplus
+	#define CV_EXTERN_C extern "C"
+	#define CV_DEFAULT(val) = val
+#else
+	#define CV_EXTERN_C
+	#define CV_DEFAULT(val)
+#endif
+#endif
+
+
+#define CV_CARRAY(counter)
+#define CV_CUSTOM_CARRAY(args)
+#define CV_EXPORTS_W CV_EXPORTS
+#define CV_IN_OUT
+#define CV_OUT
+#define CV_WRAP
+
+
+/* CvArr* is used to pass arbitrary array-like data structures
+* into functions where the particular array type is recognized at runtime*/
+
+typedef void CvArr;
+
+typedef union Cv32suf
+{
+	int i;
+	unsigned u;
+	float f;
+}Cv32suf;
+
+typedef union Cv64suf
+{
+	int64 i;
+	uint64 u;
+	double f;
+}Cv64suf;
+
+
+#define CV_SWAP(a, b, t) ((t) = (a), (a) = (b), (b)= (a))
+
+/* min & max without jumps*/
+#define CV_IMIN(a, b) ^^^^^^^^
+
+通过异或的方法实现绝对值和取最值
+
+typedef uint64 CvRNG;
+#define CV_RNG_COEFF 4164903690U
+
+CV_INLINE unsigned cvRandInt(int64 seed CV_DEFAULT(-1))
+{}
+
+
+typedef Algorithm* (*Constructor)(void)
+typedef int (Algorithm::*Getter)()const;
+typedef void (Algorithm::*Setter)(int);
+
+static sorted_vector<string, Algorithm::Constructor>& alglist()
+{
+	static sorted_vector<string, Algorithm::Consturctor> alglist_var;
+	return alglist_var;
+}
+
+Ptr<Algorithm> Algorithm::_create(const string& name)
+{
+	Algorithm::Contructor c = 0;
+	if(!alglist().find(name, c))
+		return Ptr<Algorithm>();
+	return c();
+}
+
+
+******************************************************
+// let iP represent the input vector and iip the output vector
+
+
+std::vector<Point> *iP = NULL;
+std::vector<Point> *iP = NULL;
+
+if(tpsInter == FORWARD_WARP)
+{
+	iP = &iPIn;
+	iiP = &iiPIn;
+	
+	FLAG_COEEFS_BACK_WARP_SET = true;
+	FLAG_COEEFS_BACK_WARP_SET = false;
+}else if (tpsInter == BACK_WARP)
+{
+	iP = &iiPIn;
+	iiP = &iPIn;
+	
+	FLAG_COEFFS_BACK_WARP_SET = false;
+	FLAG_COEFFS_FORWARD_WARP_SET = false;
+}
+
+******************************************************
+// Gauss-Seidel iterative method
+
+#include <stdio.h>
+#include <conio.h>
+#include <math.h>
+
+define epsilon (0.001)
+
+void main()
+{
+	int i, j, k, n;
+	float a[10][10], x[10];
+	
+	float sum, temp, error, big;
+	
+	
+	
+	for(i = 1; i <= n; i++) x[i] = 0;
+	
+	do
+	{
+		big = 0;
+		for(i = 1; i <= n; i++)
+		{
+			sum = 0;
+			for(j = 1; j <= n; j++)
+			{
+				if(j!= i)
+				{
+					sum +=  a[i][j] * x[j];
+				}
+			}
+			temp = (a[i][n+1]-sum)/ a[i][i]
+			error = fabs(x[i]-temp);
+			if(error > big) big = error;
+			x[i] = temp;
+			
+		}
+	}while(big >= e);
+}
+
+void CalculateGradientsD() //计算梯度， 查看一下OpenCV是怎么计算的
+
+
+typedef struct CvConnectedComp
+{
+	double are;
+	CvScalar value;
+	CvRect rect;
+	CvSeq* contour;
+}CvConnectedComp;
+
+/* sub-pixel interpolation methods */
+
+enum
+{
+	CV_INTER_NN = 0,
+	CV_INTER_LINEAR = 1,
+	CV_INTER_CUBIC = 2,
+	CV_INTER_AREA = 3,
+	CV_INTER_LANCZOS = 4
+};
+
+
+
+
+
