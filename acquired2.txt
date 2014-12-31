@@ -1,0 +1,58 @@
+OpenCV cvtColor系列 Lab颜色空间格式。
+
+写博客
+1.颜色空间的转换（常见的，以及电视视频）图像格式也可以弄上。
+2.滤波操作（正好借机深入理解一下OpenCV的FilterEngine）
+3.Effective C++拾遗
+4.内存泄露的处理，如何自己写内存监控程序，重载函数。overload new delete， C++不同的operator
+5.Qt的升级版，更加完善的应用程序。
+6.浮点数和整数在内存中的表示
+7.C/C++ 最基本的I/O读写，要熟练，做一个专题。
+
+Based upon locally filtering an input texture along a curved stream line segment in a vector field, it is able to depict directional information at high spatial resolution.
+
+We present a new method for computing LIC images. It employs simple box filter kernels only and minimizes the total number of stream lines to be computed. Thereby it reduces computational costs by an order of magnitude compared to the original algorithm. Our method utilizes fast, error-controlled numerical integrators. Decoupling the characteristic lengths in vector field grid, input texture and output image, it allows computation of filtered images at arbitrary resolution.
+
+
+Cabral introduced a scheme for processing images using LIC. First a gradient filed is generated using a gradient approximation operator, such as Sobel. LIC then be applied to the images, using the image itself as texture map, and the tangent field as the vector data. The result can be somewhat painterly. 
+
+By taking a regular image as the input noise texture and the extracted gradients as the vector field, the image can be blurred through a LIC process. Image warping may be achieved when a separate vector field is used as the external force.
+
+image blur and warping.
+Their algorithm has been used as a general tool for visualizing vector field. Additionally it has broad applications for image enhancement. A major drawback of the original algorithm, however, is its high computational expense and its restriction  to a fixed spatial resolution.
+
+In this paper we present an improved algorithm for line integral convolution, in which computation of streamlines is algorithmically separated from that of convolution. This allows us to exploit economies and to provide wider functionalism in each of the computational steps. 
+
+These integrator do not differ much in performance. Usually only about 25% of the time is spend in stream line integration. Most time is spent in texture sampling.
+
+For the fast-LIC algorithm it is not only important to quickly compute single stream lines, but also to process the output image pixels in such an order that the total number of stream line computation is minimized. For instance, it is not a good idea to process pixels in scanline order, because it is quit probable that new stream lines hit pixels already being covered by other lines.
+Instead of looking for the optimal pixel to be processed  next , we simply subdivide the image into smaller blocks, taking the first pixel of each block, then the second, and so on. With this method the number of computed stream lines is typically about 2% of the number of image pixels. It is possible to incorporate some more sophisticated schemes here like Sobol quasi-random sequences, which may be combined with method for finding areas in the image not covered b stream lines so far.
+
+EZ-Sketching: Three-Level Optimization for Error-tolerant Image tracing.
+
+In addition to these standard keywords, TIGCC recognizes some extended keywords which do not exist in ANSI C, like asm, typeof, inline etc., which are described in details in the section GNU C language extensions.
+
+By declaring a function inline, you can direct GCC to integrate that function's code for its callers. This makes execution faster by eliminating the function-call overhead; in addition, if any of the actual argument values are constant, their known values may permit simplifications at compile time so that not all of the inline function's code needs to be included. The effect on code size is less predictable, object code may be larger or smaller with function inlining, depending on the particular case. Inlining of function is an optimization and it really "works" only in optimizing compilation. If you don't use '-O', no function is really inline.
+
+
+Image Watch can be extended to display user-defined C/C++ image types. A suitable user-defined type must have a supported pixel format.
+Image Watch builds on Visual studio's natvis framework to support user-defined types. A .natvis file is a debugger-friendly XML description of a C++ type: it contains the name of the type and a set of rules for how to display the type;s properties. Here is a good .natvis tutorial. In Image Watch, a .natvis file describes how to read the image width, height, pixel address, etc. from an image object.
+
+Image Watch's built-in OpenCv types, cv::Mat, CvMat, and __IplImage, are specified in a .natvis file called ImageWatchOpenCV.natvis which can be used as a reference when writing Image Watch extensions. ImageWatchOpenCV.natvis is part of the ImageWatch.vsix installer, which is just a.zip archive. You can simply rename it to ImageWatch.zip and extract the contents using your favourite zip tool.
+
+Currently it(guided filter) is one of the fastest edge-preserving filters.
+
+ProLIC(Progressive LIC) addresses the low computational performance of LIC by exploiting the intrinsic parallelism of this image-based texture synthesis technique.
+
+There are three well-known methods with increasing accuracy for the integration: Euler method, midpoint method RK4(Fourth Order Runge-Kutta Integration).
+
+
+Set the active build configuration to Release. Debug builds insert additional diagnostic code and do not include optimizations that the compiler perform in release builds. Profiling the release version of your application provides more accurate data about the performance of your application.
+
+// Gaussian blur
+first point is we are working in discrete realm, so our Gaussian distribution turns into the set of values at discrete points.
+Second, we cannot work with something that spreads endlessly to the left and to right. It means Gaussian distribution is to be truncated. The question is - where? Usually in practice used the rule of 3sigma
+
+There is a problem every windowed filter deals with. Being placed at the edge filter window lacks for data elements to be processed. There are two ways to solve the problem: first is not to process edges and second, clever one, to extend data across edges. 
+
+Window is just a stencil or pattern, by means of which you are selecting the element neighborhood to help you make decision. Another name for filter window is mask, mask is a stencil, which hide elements we are not paying attention to.
