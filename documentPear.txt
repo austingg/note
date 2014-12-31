@@ -227,3 +227,18 @@ feasible.
 
 Specific problems
 Assignment problem
+
+
+Warping digital images using thin plate splines. PR 1993
+Shape matching and object recognition using shape contexts. TPAMI 2002
+Active appearance models. TPAMI 2001
+A hierachical compositional model for face representation and sketching.
+TPAMI 2008
+
+For each pixel location(x, y) in the source image(normally, rectangular), its neighbourhood is considered and used to compute the response. In case of a linear filter, it is a weighted sum of pixel values. In case of morphological operations, it is the minimum or maximum values, and so on. The computed response is stored in the destination image at the same location(x, y). It means that the output image will be of the same size as the input image. Normally, the functions support multi-channel arrays, in which case every channel is processed independently.
+
+
+Filtering functions vs. arithmetic functions.
+
+
+

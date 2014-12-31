@@ -1876,3 +1876,437 @@ uint32_t SD_GetPixel_Raw(uint32_t icanvas, int x, int y, uint32_t pUserdata)
 	SDCANVAS* pSDCanvas = (SDCANVAS*)icanvas;
 	return (uint32_t)pSDCanvas->pBitmap->pImg;
 }
+
+//Ostu threshold method, also known as maximum derivatation 
+// w_0 = N_0 / M*N
+// w_1 = N_1 / M*N
+// N_0 + N_1 = M*N;
+// w_0 + w_1 = 1;
+// u = w_0*u_0 + w_1*u_1;
+// t = argmax(w*(u0-t)^2 + w1*(u1-t)^2) ==>> w_0*w_1(u0-u1)^2;
+
+ bool GetHistogram(unsigned char *pImageData, int nWidth, int nHeight, int nWidthStep, int *pHistogram)
+ {
+	int i = 0;
+	int j = 0;
+	
+	unsigned char *pLine = NULL;
+	
+	memset(pHistogram, 0, sizeof(int)*256);
+	
+	for(pLine = pImageData, j = 0; j < nHeight; j++, pLine += nWidthStep)
+	{
+		for(i = 0; i< nWidth; i++)
+		{
+			pHistogram[pLine[i]]++;
+		}
+	}
+	return true;
+ }
+ 
+ int Ostu(unsigned char *pImageData, int nWidht, int nHeight, int nWidthStep)
+ {
+	int i = 0;
+	int j = 0;
+	int nTotal = 0;
+	int nSum = 0;
+	int A = 0;
+	int B = 0;
+	double u = 0;
+	double v = 0;
+	
+	double dVariance = 0;
+	double dMaximum = 0;
+	int nThreshold = 0;
+	int nHistogram[256];
+	
+	getHistogram(pImageData, nWidht, nHeight, nWidthStep, nHistogram);
+	
+	for(i = 0; i < 256; i++)
+	{
+		nTotal += nHistogram[i];
+		nSum = (nHistogram[i*i]);
+	}
+	
+	for(j = 0; j < 256; j++)
+	{
+		A = 0;
+		B = 0;
+		for(i = 0; i < j; i++)
+		{
+			A += nHistogram[i];
+			B += nHistogram[i]*i;
+		}
+		
+		if (A > 0) u = B/A;
+		else u = 0;
+		
+		if(nTotal - A > 0) v = (sum-B)/(nTotal - A);
+		else v = 0;
+		
+		dVariance = A*(nTotal - A)*(u-v)*(u-v);
+		
+		if(dVariance > dMaximum)
+		{
+			dMaximum = dVariance;
+			nThreshold = j;
+		}
+	}
+	
+	return nThreshold;
+ }
+
+// OpenCV basic operation
+const Scalar colors[] = 
+{
+	Scalar(0, 0, 255), Scalar(0, 255, 0), 
+	Scalar(0, 255, 255), Scalar(255, 255, 0)
+}
+
+CvEM em_model;
+CvEMParams params;
+int nsamples = 100;
+Mat samples(nsamples, 2, CV_32FC1);
+Mat labels;
+samples = samples.reshape(2, 0); // reshape的实现要看一下。
+
+for(int i = 0; i < N; i++)
+{
+	Mat samples_part = sampels.rowRange(i*nSamples/N, (i+1)*nsamples/N);
+	
+	Scalar mean(1, 1);
+	Scalar sigma(30, 30);
+	
+	randn(sample_part, mean , sigma);
+}
+sampels = samples.reshape(1, 0);
+
+// Create a matrix initialized with a constant
+Mat A33(3, 3, CV_32F, Scalar(5));
+Mat B33(3, 3, CV_32F); B33 = Scalar(6);
+
+Mat C33 = Mat::ones(3, 3, CV_32F)*6;
+Mat D33 = Mat::zeros(3, 3, CV_32F)+6;
+
+// Create a matrix initialized with specified values
+double a = CV_PI/3;
+Mat A22 = (Mat_<float>(2, 2) << cos(a), -sin(a), sin(a), cos(a));
+
+float B22data[] = {cost(a), -sin(a), sin(a), cos(a)};
+Mat B22 = Mat(2, 2, CV_32F, B22data).clone();
+
+// Initialize a random matrix
+
+randu(image, Scalar(0), Scalar(256));
+randn(image, Scalar(128), Scalar(10));
+
+// Acess matrix elements
+A33.at<float>(i, j) = A33.at<float>(j, i) + 1;
+
+Mat dyImage(image.size(), image.type());
+for(int y = 1; y < image.rows-1; y++)
+{
+	Vec3b *preRow = image.ptr<Vec3b>(y-1);
+	Vec3b *nextRow = image.ptr<Vec3b>(y+1);
+	for(int x = 0; x < image.cols-1; x++)
+	{
+		for(int c = 0; c < 3; c++)
+		dyImage.at<Vec3b>(y, x)[c] = saturate_cast<uchar>(nextRow[x][c] - preRow[x][c]);
+	}
+}
+
+Mat_<Vec3b>::iterator it = image.begin<Vec3b>(), itEnd = image.end<Vec3b>();
+
+for(; it! = itEnd; it++) (*it)[1] ^= 256;
+
+
+//gpu_math
+inline __host__ __device__ float smoothstep(float a, float b, float x)
+{
+	float t = (x-a)/(b-a);
+	if(t < 0) t = 0;
+	if(t > 1) t = 1;
+	return t*t*(3 - 2*t);
+}
+
+inline __device__ __host__ float lerp(float a, float b, float t)
+{
+	return a + t*(b-a);
+}
+
+struct int2;
+struct float4;  // small and usual data type, use struct.
+
+// stride or widthstep
+
+
+
+
+/* \typedef
+	shorter aliases for the most popular specializations of Vec<T, n>
+*/
+
+typedef Vec<uchar, 2> Vec2b;
+typedef Vec<uchar, 3> Vec3b;
+typedef vec<uchar, 4> Vec4b;
+
+typedef Vec<short, 2> Vec2s;
+typedef Vec<short, 3> Vec3s;
+typedef Vec<short, 4> Vec4s;
+
+typedef Vec<int, 2> Vec2i;
+typedef Vec<int, 3> Vec3i;
+typedef Vec<int, 4> Vec4i;
+
+typedef Vec<float, 2> Vec2f;
+typedef Vec<float, 3> Vec3f;
+typedef Vec<float, 4> Vec4f;
+
+template<typename _Tp, int m, int n> class Matx
+{
+public:
+	typedef _Tp value_type;
+	typedef Matx<_Tp, (m<n?m:n), 1> diag_type;
+	typedef Matx<_Tp, m, n> mat_type;
+	
+	enum {depth = DataDepth<_Tp>::value, rows = m, cols = n}
+}
+
+
+/***************************************************
+				Gaussian Blur
+****************************************************/
+
+cv::Mat cv::getGaussianKernel(int n, double sigma, int ktype)
+{
+	const int SMALL_GAUSSIAN_SIZE = 7;
+	static const float small_gaussian_tab[][SMALL_GAUSSIAN_SIZE] = 
+	{
+		{1.0f},
+		{0.25f, 0.5f, 0.25},
+		{0.0625f, 0.25f, 0.375f, 0.25f, 0.0625f},
+		{0.03124f, 0.109275f, 0.21875f, 0.28125f, 0.21875f, 0.109375f, 0.03125f}
+	};
+	
+	const float* fixed_kernel = n%2 ==1 && n <= SMALL_GAUSSIAN_SIZE && sigma <= 0; small_gaussian_tab[n>>1]:0;
+	
+	Mat kernel(n, 1, ktype);
+	float* cf = (float*)kernel.data;
+	double* cd = (float*)kernel.data;
+	
+	double sigmaX = sigma > 0? sigma : ((n-1)*0.5 -1)*0.3 + 0.8;
+	
+	double scale2X = -0.5f/(sigmaX*sigmaX);
+	double sum = 0;
+	
+	int i;
+	
+	for(i = 0; i < n; i++)
+	{
+		double x = i - (n-1)*0.5;
+		double t = fixed_kernel ? (double)fixed_kernel[i]:std::exp(scale2X*X*X);
+		
+		if(ktype == CV_32F)
+		{
+			cf[i] = (float)t;
+			sum += cf[i];
+		}
+		else
+		{
+			cd[i] = t;
+			sum += cd[i];
+		}
+	}
+	sum = 1./sum;
+	
+	for(i = 0; i < n; i++)
+	{
+		if(ktype == CV_32F) 
+			cf[i] =(float)(cf[i]*sum);
+		else
+			cd[i] *= sum;
+	}
+	
+	return kernel;
+}
+
+
+void GetDirectionalDoG(imatrix& image, ETF& e, mymatrix& dog, myvec& GAU1, myvec& GAU2, double tau)
+{
+	myvec vn(2);
+	
+	double x, y, d_x, d_y;
+	doouble weight1, weight2, w_sum1, sum1, sum2, w_sum2;
+	
+	int s;
+	int x1, y1;
+	int i, j;
+	int dd;
+	
+	double val;
+	
+	int half_w1, half_w2;
+	
+	half_w1 = GAU1.getMax()-1;
+	half_w2 = GUA2.getMax()-1;
+	
+	int image_x, image_y;
+	
+	image_x = image.getRow();
+	image_y = image.getCol();
+}
+
+void CalculateGradientM(const unsigned char* luminanceData, unsigned short *gradientData, int width, int height)
+{
+	for(int y = 0; y < hegiht; y++)
+	{
+		for(int x = 0; x < width; x++)
+		{
+			
+			gradientData[y*width+x] = (unsigned short)(gx+gy);
+		}
+	}
+}
+
+Mat bw = threshval < 128 ? (img < threshval):(img > threshval);
+
+CommandLineParser parser(argc, argv, keys);
+
+static void read_csv(const string& filename, vector<Mat>&image, vector<int>&label, char separator = ';')
+{
+	std::ifstream file(filename.c_str(), ifstream::in);
+	if(!file){
+		string error_message = "No valid input file was given, please check the given file name";
+		
+		CV_ERROR(CV_StsBadArg, error_message);
+	}
+	
+	string line, path, classlabel;
+	
+	while(getline(file, line))
+	{
+		stringstream liness(line);
+		getline(liness, path, separator);
+		getline(liness, classlabel);
+		
+		if(!path.empty() && !classlabel.empty())
+		{
+			images.push_back(imread(path, 0));
+			labels.push_back(atoi(classlabel.c_str());
+		}
+	}
+}
+
+
+int main(int argc, const char*argv[])
+{
+	if(argc != 2)
+	{
+		cout << "usage: " << argv[0] << " " << endl;
+		exit(1);
+	}
+	
+	string fn_csv = string(argv[1]]);
+	
+	vector<Mat> images;
+	vector<int> labels;
+	
+	try 
+	{
+	  read_csv(fn_csv, images, labels);
+	}
+	catch(cv::Exception& e)
+	{
+		cerr << "Error opening file \"" << e.msg << endl;
+		exit(1);
+	}
+}
+
+
+// opencv core.hpp
+
+#include <limits.h>
+#include <algorithm>
+#inlcude <cmath>
+#include <cstddef>
+#include <complex>
+#include <map>
+#include <new>
+#include <string>
+#include <vector>
+#include <sstream>
+
+namespace cv{
+#undef abs
+#undef min
+#undef max
+#undef Complex
+	
+	using std::vector;
+	using std::string;
+	using std::ptrdiff_t;
+	
+	
+	typedef std::string String;
+	CV_EXPORTS string format(const char* fmt, ...);
+	
+	
+	/*!
+	Allocates memory buffer
+	
+	This is specialized OpenCV memory allocation function that returns properly aligned memory buffers. The usage is identical to malloc(). The allocated buffers must be freed with cv::fastFree();*/
+}
+
+// template usage
+
+template<class T, int MAXSIZE>
+class Stack
+{
+	private:
+	T elems[MAXSIZE];
+	
+	int numElems;
+	
+	public:
+	Stack();
+	void push(T const &);
+	void pop();
+	
+	T top() const;
+	bool empty() const
+	{return numElems == 0;}
+	
+	bool full() const
+	{return numElems == MAXSIZE;}
+}
+
+template<class T, int MAXSIZE>
+statck<T, MAXSIZE>::Stack:numElems(0)
+{}
+
+template<class T, int MAXSIZE>
+void Statck<T, MAXSIZE>::push(T const &elem)
+{
+	if(numElems == MAXSIZe){
+		throw std::out_of_range("Stack<>::push() : stack is full.");
+	}
+	elems[numElems] = elem;
+	++numElems;
+}
+
+
+template<class T, int MAXSIZE>
+void Stack<T, MAXSIZE>::pop()
+{
+	if(numElems <= 0)
+	{
+		throw std::out_of_range("Stack<>::pop(): empty stack.");
+	}
+	
+	--numElems;
+}
+
+
+/* cuda c extends c by allowing the programmer to define C functions, called kernels, that when called are executed N times in parallel by N different CUDA threads, as opposed to only once like regular C functions.
+A kernel is defined using the __global__ declaration specifier and the number of CUDA threads that execute that kernel for a given kernel call is specified using a new <<<...>>>execution configuration syntax. Each thread that executes the kernel is given a unique thread ID that is accessible within the kernel through the build-in threadIdx variable.
+*/

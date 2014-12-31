@@ -694,7 +694,844 @@ enum
 	CV_INTER_LANCZOS = 4
 };
 
+// compute pseudo-inverse of A, equivalent to A.inv(DECOMP_SVD)
+
+SVD svd(A);
+Mat pinvA = svd.vt.t()*Mat::diag(1./svd.w)*svd.u.t();
+
+// compute the new vector of parameters in the Levenberg-Marquardt algorithm;
+
+x -= (A.t())*A + lambda*Mat::eye(A.cols, A.rows, A.types()).inv(DECOMP_CHOLESKY)*(A.t()*err);
+
+
+/**********************************************
+Qt efficient connection
+***********************************************/
+
+QList<QWidget *> widgets = this.findChildren<QWidget*>();
+for(int i = 0; i < widgets.size(); i++)
+{
+	QWidget *w = widget.at(i);
+	
+	if(w->inherits("QAbstractSpinBox"))
+	{
+		this->connect(w, SIGNAL(activated(int)), SLOT(do_update());
+	}
+	if(w->inherits("QComboBox"))
+	{
+		this->connect(w, SIGNAL(activated(int)), SLOT(do_update()));
+	}
+}
+
+/******************************************************
+c plus plus variant length argument
+******************************************************/
+
+#include <stdarg.h>
+void LOG::OutputSuccess(char* text, ...)
+{
+	va_list argList;
+	va_start(argList, text);
+	
+	logFile = fopen(filename, "a+");
+	
+	if(!logFile)
+		return;
+		
+	//write the text;
+	fprintf(logFile, "<->");
+	vfprintf(logFile, text, argList);
+	
+	putc('\n', logFile);
+	
+	//close the file
+	fclose(logFile);
+	logFile = NULL;
+	va_end(argList);
+}
+
+void LOG::OutPutError(char *text, ...)
+{
+	//compile string to output
+	va_list argList;
+	va_start(argList, text);
+	
+	//Open file to append
+	logFile=fopen(filename, "a+");
+	if(!logFile) return;
+	
+	//Write the text
+	fprintf(logFile, "<!>");
+	vfprintf(logFile, text, argList);
+	putc('\n', logFile);
+	
+	//close the file
+	
+	fclose(logFile);
+	logFile=NULL;
+	va_end(argList);
+}
+
+
+class BaseColumnFilter
+{
+	public:
+	virtual ~BaseColumnFilter();
+	// To be overriden by the user.
+	//
+	
+	// runs a filtering operation on the set of row
+	
+	virtual void operator()(const uchar** src, uchar* dst, int dststep, int dstcount, int width) = 0;
+	
+	// resets the filter state(may be needed for IIR filters)
+	
+	int ksize; // the aperture size;
+	int anchor; // position of the anchor point, normally not used during the processing
+};
+
+inline double gauss(double x, double mean, double sigma)
+{
+	double dist = x-mean;
+	return exp(-dist*dist/2/sigma/sigma);
+}
+
+void MakeGuassianVector(double sigma, myvec& GAU)
+{
+	int i, j;
+	double threshold = 0.001;// dynamic effective kernel size based on threshold.
+	
+	int halfWidth = ceilf(2*simga);
+	
+	GAU.init(halfWidth+1);
+	GAU.zero();
+	for(int i = 0; i <= halfWidth; i++)
+	{
+		GAU[i] = gauss((double)i, 0.0, sigma);
+	}
+	GAU.normalize();
+}
+
+void getDirectionalDoG(imatrix& image, ETF& e, mymatrix& dog, myvec& GAU1, myvec& GAU2, double tau)
+{
+	myvec vn(2);
+	
+	double x, y, d_x, d_y;
+	double weight1, weight2, w_sum1, sum1, sum2, w_sum2;
+	
+	int s;
+	int x1, y1;
+	int dd;
+	double val;
+	
+	int half_w1, half_w2;
+	
+	half_w1 = GAU1.getMax()-1;
+	half_w2 = GAU2.getMax()-1;
+	
+	int image_x, image_y;
+	image_x = image.getRow();
+	image_y = image.getCol();
+	
+	for(i = 0; i < image_x; i++)
+	{
+		for(j = 0; j < image_y; j++)
+		{
+			sum1 = sum2 = 0.0;
+			w_sum1 = w_sum2 = 0.0;
+			
+			weight1 = weight2 = 0.0;
+			vn[0] = -e[i][j].ty;
+			vn[1] = -e[i][j].tx;
+		}
+	}
+}
 
 
 
+//separable gaussian filter
+
+void gaussian_filter_xy(Mat dst, float sigma, float precision_sigma)
+{
+	float twoSigma2 = 2.0f*sigma*sigma;
+	int halfWidth = ceilf(precision*sigma);
+	
+	T sum = texSRC<T>(ix, iy);
+	float norm = 1;
+	for(int i = 1; i <= halfWidth; i++)
+	{
+		float kernel = expf(-i*i/twoSigma2);
+		sum += kernel*(texSRC<T>(ix + dx*i, iy + dy*i) + texSRC<T>(ix + dx*i, iy+dy*i);
+		norm += 2*kernel;
+	}
+	sum /= norm;
+	dst(ix, iy) = sum;
+}
+
+
+#define CV_RGB((r), (g), (b)) Scalar((b), (g), (r))
+
+#define CV_PI 3.1415926
+#define Cv_LOG2 0.6931478055994
+
+#define CV_SWAP(a, b, t)) ((t) = (a), (a) = (b), (b) = (t))
+
+#ifndef MIN
+#define MIN(a, b) ((a)>(b)?(b):(a))
+#endif
+
+#ifndef MAX
+#define MAX(a, b) ((a)<(b)?(b):(a))
+
+
+/* min & max without jumps*/
+
+#define CV_IMIN(a, b) ((a) ^ (((a)^(b)) & (((a) < (b)) - 1)))
+
+/* absolute value without jumps */
+#ifndef __cplusplus
+#define CV_IABS(a) (((a) ^ ((a) < 0 ? -1 : 0)) - ((a) < 0 ? -1 : 0))
+#else
+#define CV_IABS(a) abs(a)
+#endif
+
+#ifndef CV_INLINE
+#if defined __cplusplus
+	#define  CV_INLINE inline
+#elif defined _MSC_VER
+	#define CV_INLINE __inline
+#else
+#define CV_INLINE static
+#endif
+#endif /*CV_INLINE*/
+
+#if (defined WIN32 || define _WIN32 || define WINCE)&& (defined CVAPI_EXPORTS)
+#define CV_EXPORTS __declspec(dllexport)
+#else
+#define CV_EXPORTS
+#endif
+
+#ifndef CVAPI
+#define CVAPI(rettype) CV_EXTERN_C CV_EXPORTS rettype CV_CDECL
+#endif
+
+/* special informative macros for wrapper generators */
+
+#define CV_OUT
+#define CV_IN
+#define CV_IN_OUT
+
+#define CV_PROP
+
+/* CvArr* is used to pass arbitrary array-like data structures info functions where the particular array type is recognized at runtime */
+
+typedef void CvArr;
+
+typedef union Cv32suf
+{
+	int i;
+	unsigned u;
+	float f;
+}
+Cv32suf;
+
+/* Line iterator state: */
+typedef struct CvLineIterator
+{
+	/*Pointer to the current point: */
+	uchar* ptr;
+	
+	/*Bresenham algorithm state: */
+	
+	int err;
+	int plus_delta;
+	int minus_delta;
+	int plus_step;
+	int minus_step;
+}
+CvLineIterator;
+
+BilateralFilter_8u_Invoker
+
+private:
+	const Mat *temp;
+	Mat *dest;
+	int radius, maxk, *space_ofs;
+	float *space_weight, *color_weight;
+	
+
+static void bilaterFiter_8u(const Mat& src, Mat& dst, int d, double simga_color, double sigma_space, int borderType)
+{
+	int cn = src.channels();
+	int i, j, maxk, radius;
+	Size size = src.size();
+	
+	double gauss_color_coeff = -0.5/(sigma_color*simga_color);
+	double gauss_space_coeff = -0.5/(sigma_space*sigma_space);
+	
+	if(d <= 0)
+		radius = cvRound(simga_space*1.5);
+	else
+		radius = d/2;
+	radius = MAX(radius, 1);
+	
+	d = radius*2 + 1;
+	
+	Mat temp;
+	copyMakeBorder(src, temp, radius, radius, radius, radius,borderType);
+	
+	vector<float> _color_weight(cn*256);
+	vector<float> _space_weight(d*d)
+	vector<int> _space_ofs(d*d);
+	
+	float* colorweight = &_colorweight[0];
+	float* space_weight = &_space_weight[0];
+	
+	int *space_ofs = &_space_ofs[0];
+	
+	for(i = 0; i < 256*cn; i++)
+	{
+		color_weight[i] = (float)std::exp(i*i*gauss_color_coeff);
+	}
+}
+
+_isnan(double x);
+_finite(double x);
+
+// assign a length which is slightly more than needed
+
+len = (float)(maxValSrc-minValSrc)*cn;
+
+kExpNumBins = kExpNumBinsPerChannel * cn;
+
+vector<float> _expLUT(kExpNumBins +2);
+
+float *expLUT = &_expLUT[0];
+
+scale_index = kExpNumBins/len;
+
+// initialize the exp LUT
+for(i = 0; i < kExpNumBins + 2; i++)
+{
+	if(lastExpVal > 0.f)
+	{
+		double val = i/scale_index;
+		expLUT[i] = (float)std::exp(val*val*gauss_color_coeff);
+		lastExpVal = expLUT[i];
+	}
+	else
+		expLUT[i] = 0.f;
+}
+
+
+void cv::bilaterFilter(InputArray _src, outputArray _dst, int d, double sigmaColor, double sigmaSpace, int borderType)
+{
+	Mat src = _src.getMat();
+	_dst.create(src.size(), src.type());
+	
+	Mat dst = _dst.getMat();
+	if(src.depth() == CV_8U)
+	{
+		bilaterFilter_8u(src, dst, sigmaColor, sigmaSpace, borderType);
+	}
+	else if(src.depth() == CV_32F)
+	{
+		bilateralFilter_32f(src,  dst, d, sigmaColor, sigmaSpace, borderType);
+	}
+	else
+		CV_Error(CV_StsUnsupportedFormat, "Bilateral filtering is only implemented for 8u and 32f images.");
+}
+
+
+#if !defined(CV_IMPL)
+#define CV_IMPL extern "C"
+#endif // CV_IMPL
+
+
+This structure defines information of image. We think an image as an offscreen.
+
+
+
+//overload function
+
+void operator()(src, dst, dststep, dstcount, width);
+
+filterEngine->apply(src, dst);
+
+这里filterEngine的设计理念
+1.分离filter和image
+2.抽象filter接口， 3种基本的抽象类
+3.init中完成各个filter的初始化，及类型检查
+4.在apply，start等函数中，完成filter过程。
+
+The Guided filter is included in Wikipeida as a representative edge-preserving smoothing technique.
+The guided filter is included in offical Matlab 2014
+
+
+
+//Google test event 
+
+class FooEnvironment: public testing::Environment
+{
+	public:
+	virtual void SetUp()
+	{
+		std::cout << "Foo FooEnvironment Set Up" << std::endl;
+	}
+	virtual void TestDown()
+	{
+		std::cout << "Foo FooEnvironment TearDown" << std::endl;
+	}
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	testing::AddGlobalTestEnvironment(new FooEnvironment);
+	
+	testing::initGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
+
+class FooTest: public testing::Test
+{
+	protected:
+	static void SetUpTestCase()
+	{
+		share_resource_ = new ...;
+	}
+	static void TearDownTestCase()
+	{
+		delete shared_resource_ ;
+		shared_resource_= NULL;
+	}
+	
+	static T* shared_resource_;
+}
+
+Test_F(FooTest, Test1){}  //F:   Fixture 
+Test_F(FooTest, Test2){}
+
+
+#define TESTCASE_NAME(testcase_name) \
+	testcase_name##_TEST 
+
+#define NANCY_TEST_(testcase_name) \
+class TESTCASE_NAME(testcase_name) : public TestCase \
+{\
+	public: \
+	TESTCASE_NAME(testcase_name)(const char* case_name):TestCase(case_name){};\
+	virtual void Run();\
+	
+	
+	private: \
+	static TestCase *const testcase_; \
+};\
+\
+
+TestCase *const TESTCASE_NAME(testcase_name) \
+:: testcase_ = UnitTest::GetInstance()->RegisterTest(\ new TESTCASE_NAME(testcase_name)(#testcase_name));\
+
+##(token-pasting)符号连接操作
+#（stringizing)
+void TESTCASE_NAME(testcase_name)::Run()
+/* 注意Run()后面没有{}，之所以这么做是因为宏定义讲测试用例放入到Run方法主体中。
+*/
+
+
+NIESET(FooTest_PassDemo)
+{
+	EXPECT_EQ(3, Foo(1, 2));
+	EXPeCT_EQ(3, Foo(1, 1));
+}
+
+#define NIEST(testcase_name) \
+	NANCY_TEST_(testcase_name)
+#define RUN_ALL_TEST() \
+	UnitTest::GetInstance()->RunCases();
+	
+	
+#ifdef FORDLLEXPORT
+#define MCV_API __declspec(dllexport)
+#else
+#define MCV_API
+#endif
+
+AFF_AREAMASK affMaskFace = {0}, *paffMaskFace = &affMaskFace;
+// bearguments check
+MERR_INVALID_PARAM;
+
+MHandle hMemMgr = NULL;
+void *membuffer = malloc(1024*1024*40);
+
+MLong size_of_buffer = 1024*1024*40;
+hMemMgr = (MHandle)MMemMgrCreate(membuffer, size_of_buffer);
+ret = AFF_Create(hMemMgr, MNULL, &hEngine);
+
+if(MOK != ret)
+	goto exit;
+
+switch(lFaceOrient)
+{
+	case ASC_FOC_0:
+	lFaceRoll = 0;
+	break;
+}
+
+
+exit:
+	if(hEngine)
+		AFF_Release(hEngine);
+	return MOK;
+
+	
+	
+#define CV_IMPL extern "C"
+#define CV_IMPL CV_EXTERN_C
+
+#define Cv_INIT_ALGRITHM(classname, algname, memerinit)\
+static ::cv::Algorithm* create##classname()\
+{\
+	return new classname;\
+}\
+static ::cv::AlgorithmInfo& class##_info()\
+{\
+	static ::cv::AlgorithmInfo classname##_info_var(algname, create##_name)\
+	return classname##_infor_var;\
+}\
+
+
+#define CV_PASTE2(a, b) a##b
+#define CV_PASTE(a, b) CV_PASTE(a, b)
+#define CV_MAKE_STR(a) #a
+
+
+//photoshop decolorization process
+
+void _stdcall Desaturate(unsigned char *Src, int Width, int Height, int Stride)
+{
+	int X, Y, Max, Min, Value;
+	unsigned char* Pointer;
+	
+	for(Y = 0; Y < Height; Y++)
+	{
+		Pointer = Src + Y*Stride;
+		for(X = 0; X < Width; X++)
+		{
+			if(*Pointer >= *(Pointer+1))
+			{
+				Max = *Pointer;
+				Min =  *(Pointer + 1);
+			}
+			else
+			{
+				Max = *(Pointer + 1);
+				Min = *Pointer;
+			}
+			
+			if(*(Pointer + 2) > Max) Max = *(Pointer + 2)
+			else if (*(Pointer + 2) < Min)
+			{
+				Min = *(Pointer + 2);
+			}
+			
+			Value = (Max + Min) >> 1;
+			
+			*Pointer++ = value;
+			*Pointer++ = value;
+			*Pointer++ = value;
+		}
+	}
+}
+
+//copy make border
+
+
+for(Y = 0; Y < Height; Y++)
+{
+	*(CloneData + (Y+1) * CloneStride) = *(Scan0 + Y*Stride);
+	
+	CopyMemory(CloneData+CloneStride*(Y+1)+1, Scan0 + Y*Stride + Width - 1);
+	
+	*(CloneData + (Y+1)*CloneStride, CloneData + Width + 1) = *(Scan0 + Y*Stride + Width - 1);
+}
+
+CopyMemory(CloneData, CloneData + CloneStride, CloneStride);
+CopyMemory(CloneData+(Height+1)*CloneStride, CloneData+Height*CloneStride, CloneStride);
+
+
+//image process
+GlobalFree(GloneData);
+
+
+
+//integral image
+
+for(int y = 0; y < image->height; y++, src+=image->width, sum += sum_width)
+{
+	int s = sum[-1] = 0;
+	for(x = 0; x < image->width; x++)
+	{
+		s += src[x];
+		sum[x] = sum[x-sum_width] + s;
+	}
+}
+//opencv adaptive threshold
+void cv::adaptiveThreshold(InputArray _src, OutputArray _dst, double maxValue, int method, int type, int blockSize, double delta)
+{
+	Mat src = _src.getMat();
+	CV_Assert(src.type() == CV_8UC1);
+	CV_Assert(blockSize % 2 == 1 && blockSize > 1);
+	
+	Size size = src.size();
+	_dst.create(size, src.type());
+	
+	Mat dst = _dst.getMat();
+	
+	if(maxValue < 0)
+	{
+		dst = Scalar(0);
+		return;
+	}
+	
+	Mat mean;
+	
+	if(src.data != dst.data) mean = dst;
+	
+	if(src.data == ADAPTIVE_THRESH_MEAN_C)
+		boxFilter(src, mean, src.type(), Size(blockSize, blockSize), Point(-1, -1), true, BORDER_REPLICATE);
+	else if (method == ADAPTIVE_THRESH_GAUSSIAN_C)
+		GaussianBlur(src, mean, Size(blockSize, blockSize), 0, 0, BORDER_REPELICATE);
+	else
+		CV_Error(CV_stsBadFlag, "Unknown/unsupported adaptive threshold method.");
+		
+		
+	int i, j;
+	uchar imaxval = saturate_cast<uchar>(maxValue);
+	
+	int idelta = type = THRESH_BINARY?cvCeil(delta):cvFloor(delta);
+	
+	uchar tab[768];
+	
+	//construct lookup table
+	
+	//do threshold
+}
+
+//Parallel Primitives
+
+class CV_EXPORTS ParallelLoopBody
+{
+	public:
+	virtual ~ParallelLoopBody();
+	virtual void operator(const Range& range) const = 0;
+}
+
+CV_EXPORTS void parallel_for(const Range& range, const ParallelLoopBody &body)
+
+
+// synchronization
+class CV_EXPORTS Mutex
+{
+	public:
+	Mutex();
+	~Mutex();
+	Mutex(const Mutex& m);
+	
+	Mutex& operator=(const Mutex &);
+	
+	void lock();
+	bool trylock();
+	void unlock();
+	
+	struct Impl;
+	
+	protected:
+	Impl* impl;
+};
+
+class CV_EXPORTS AutoLock
+{
+	public:
+	AutoLock(Mutex& m):mutex(&m){mutex->lock();}
+	~AutoLock(){mutex->unlock();}
+	
+	protected:
+	Mutex* mutex;
+	
+	private:
+	AutoLock(const AutoLock &);
+	AutoLock& operator= (const AutoLock&);
+};
+
+
+
+
+
+double myinf = std::numeric_limits<double>::infinity();
+
+
+
+inline float qx_max_f3(float a, float b, float c)
+{
+	return max(max(a, b), c); // can unfold in case max function not inlin.
+}
+
+inline double qx_div(double x, double y)
+{
+	return (y != 0)?(x/y):0; // can be optimized again referenc opencv
+}
+
+inline void qx_image_dot_product(double *out, float *a, float *b, int len)
+{
+	*out++ = double(*a++) * double(*b++);
+}
+
+inline void qx_image_dot_product(double *out, float *a, unsigned char *b)
+{
+	*out++ = double(*a++)*double(*b++);
+}
+
+inline void image_zero(float **in, int h, int w, float zero = 0)
+{
+	memset(in[0], zero, sizeof(float)*h*w);
+}
+
+inline unsigned char rgb2gray(unsigned char *rgb)
+{
+	return (unsigned char(0.229*rgb[0] + 0.587*rgb[1] + 0.114*rgb[2] + 0.5));
+}
+
+
+//good naming and programming habit
+float *tempLinePtr = temp.ptr<float>(j);
+
+const float* srcLinePtr = temp.ptr<float>(j);
+
+Mat plane[] = {temp, Mat::zeros(temp.size), CV_32F};
+
+merge(planes, 2, complex);
+dft(complex, complex, flag);
+
+split(complex, planes);
+
+void Cloning::solve(const Mat &img, Mat &mod_diff, Mat &result)
+{
+	const int w = img.cols;
+	const int h = img.rows;
+}
+
+void Cloning::computeDerivatives(const Mat& destination, const Mat& patch, const Mat& binaryMask)
+{
+	initVariables(destination, binaryMask);
+	
+	computeGradientX(destination, destinationGradientX);
+	
+	computeGradientY(destination, destinationGradientY);
+	
+	computeGradientX(patch, patchDestinationGraidentX);
+	computeGradeintY(patch, patcDestinationGradeintY);
+	
+	Mat Kernel(Size(3, 3), CV_8UC1);
+	Kernel.setTo(Scalar(1));
+	erode(binaryMask, binaryMask, Kernel, Point(-1, -1), 3);
+	binaryMask.convertTo(binaryMaskFloat, CV_32FC1, 1.0/255.0;)
+}
+
+void Cloning::scalarProduct(Mat mat, float r, float g, float b)
+{
+	vector<Mat> channels;
+	split(mat, channels);
+	multiply(channels[2], r, channels[2]);
+	multiply(channels[1], g, channels[1]);
+	multiply(channels[0], b, channels[0]);
+	merge(channels, mat);
+}
+
+//write program with clear blank line for good reading. just like composition with paragraph
+
+void cv::edgePreservingFilter(InputArray _src, OutputArray _dst, int flags, float sigma_s, float sigma_r)
+{
+	Mat I = _src.getMat();
+	_dst.create(I.size(), CV_8UC3);
+	Mat dst = _dst.getMat();
+	
+	int h = I.size().hegiht;
+	int w = I.size().width;
+	
+	Mat res = Mat(h, w, CV_32FC3);
+	dst.convertTo(res, CV_32FC#, 1.0/255.0);
+	
+	Domain_Filter obj;
+	
+	Mat img = Mat(I.size(), CV_32FC3);
+	I.convertTo(img, CV_32FC3, 1.0/255.0);
+	
+	obj.filter(image, res, sigma_s, simga_r, flags);
+	
+	convertScaleAbs(rest, dst, 255);
+}
+
+void cv::detailEnhance(InputArray _src, OutputArray _dst, float sigma_s, float simga_r)
+{
+	Mat I = _src.getMat();
+	_dst.create(I.size(), CV_8UC3);
+	Mat dst = _dst.getMat();
+	
+	int h = I.size().hegiht;
+	int w = I.size().width;
+	float factor = 3.0f;
+	
+	Mat img = Mat(I.size(), CV_32FC3);
+	I.convertTo(img, CV_32FC3, 1.0/255.0);
+	
+	Mat res = Mat(h, w, CV_32FC1);
+	dst.convertTo(res, CV_32FC3, 1.0/255);
+	
+	Mat result = Mat(img.size(), CV_32FC3);
+	Mat lab = Mat(img.size(), CV_32FC3);
+	
+	vector<Mat> lab_channels;
+	cvtColor(img, lab, COLOR_BGR2Lab);
+	split(lab, lab_channels);
+	
+	Mat L = Mat(img.size(), CV_32FC1);
+	
+	lab_channel[0].convertTo(L, CV_32FC1, 1.0/255);
+	
+	Domian_Filter obj;
+	
+	obj.filter(L, res, sigma_s, sigma_r, 1);
+	
+	Mat detail = Mat(h, w, CV_32FC1);
+	
+	detail = L - res;
+	multiply(detail, factor, detail);
+	L = res + detail;
+	
+	L.convertTo(lab_channel[0], CV_32FC1, 255);
+	
+	merge(lab_channel, lab);
+	cvtColor(lab, result, Color_Lab2BGR);
+	result.convertTo(dst, CV_8UC3, 255);
+}
+
+
+typedef void (*LUTFunc)(const uchar* src, const uchar*dst, int len, int cn, int lutcn);
+
+static LUTFunc lutTab[] = 
+{
+	(LUTFunC)LUT8_8u, (LUTFunc)....;
+}
+
+// simplest Image class
+
+class Image
+{
+	CSize Size;
+	T *Buffer;
+	
+	Image():Buffer(NULL){}
+	
+	~Image();
+}
 

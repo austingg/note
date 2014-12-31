@@ -207,3 +207,27 @@ The traditional alpha blend is set up as follows;
 
 glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+
+In mathematics, the structure tensor, also referred to as the second-moment matrix, is a matrix derived from the gradient of a function. It summarizes the predominant directions of the gradient in a specified neighbourhood of a point, and the degree to which those direction are coherent. The structure tensor is often used in image processing and computer vision.
+
+
+a kernel k is called separable if it can be written as the Kronecker product of a horizontal kernel H with  a vertical kernel v;
+
+To facilitate the production of high-quality line drawing, this vector field must satisfy the following requirements: 
+1) the vector flow must describe the salient edge tangent direction in the neighbourhood.
+2) The neighbouring vectors must be smoothly aligned except a sharp corners.
+3) Important edges must retain their original directions. 
+
+
+We present a novel technique for constructing ETF that meets all the requirements stated above. Our method uses a kernel-based nonlinear smoothing of vector filed, inspired by the bilateral filtering framework. In each pixel centered kernel, we perform a nonlinear vector smoothing, such that the salient edge directions are preserved while weak edges are directed to follow the neighbouring dominant ones. Also, to preserve sharp corners and avoid undesirable 'swirling' artifact, we encourage smoothing among the edges with similar orientations. This also prevents weak vectors from being affected by strong but irrelevant vectors, and thus results more tightly aligned vectors. Our ETF construction filter is thus defined as follows:
+
+The initial gradient map g(x) is computed by employing Sobel operator. Our filter may be iteratvely applied to update ETF incrementally.
+
+Notice ETF preserves edge directions well around important features while keeping them smooth elsewhere.
+
+
+Given t(x), namely the ETF, we apply a flow-guided anisotropic DoG filter using the kernel whose shape is defined by the local flow recorded in ETF. Note t(x) represents the local edge direction, which means we will most likely have the highest contrast in its perpendicular, that is, the gradient direction g(x). Thus, the idea is to apply a linear DoG filter in this gradient direction as we move along the edge flow. we then accumulate the individual filter responses along the flow, as a way of collecting enough evidence before we draw the conclusion(on the edge-ness)
+
+
+For implementation, we sample p*q points from the kernel and discretely approximate Eq. 6 and Eq. 9. We first sample p points along c_x by bidirectionally following the vector flow starting from x. Let z denote the sample points along c_x. Initially, we set z<-x, then iteratively obtain the next sample point by moving along x_x in one direction using a fixed step size delta. In our experiments, we set delta_m and delta_n equals 1. Note p and q are automatically determined by window size, respectively.
