@@ -1535,3 +1535,182 @@ class Image
 	~Image();
 }
 
+
+typedef double (*DotProdFunc)(const uchar* src1, const uchar* src2);
+
+static DotProdFunc getDotProdFunc(int depth)
+{
+	static DotProdFunc dotProTab[] = 
+	{
+		(DotProdFunc)GET_OPTIMIZED(dotProd_8u), ....
+	};
+	
+	return dotProdTab[depth];
+}
+
+double Mat::dot(InputArray _mat)const
+{
+	Mat mat = _mat.getMat();
+	
+	int cn = channels();
+	DotProdFunc func = getDotProdFunc(depth());
+	
+	CV_Assert(mat.type() == type() && mat.size == size && func != 0)
+	
+	if(isContinous() && mat.isContinuous())
+	{
+		size_t len = total()*cn;
+		if(len = (size_t)(int)len)
+			return func(data, mat.data, (int)len);
+	}
+	
+	const Mat *arrays[] = {this, &mat, 0};
+	uchar* ptrs[2];
+	
+	NAryMatIterator it(arrays, ptrs);
+	int len = (int)(it.size*cn);
+	double r = 0;
+	for(size_t i = 0; i < it.nplanes; i++, it++)
+	{
+		r += func(ptrs[0], ptr[1], len);
+	}
+	return r;
+}
+
+
+
+export LD_LIBRARY_PATH="../lib"
+gcc main.c -I ../include -L ../lib -lhello -o main
+
+
+
+#if (defined WIN32 || defined _WIN32 || defined WINCE || defined __CYGWIN__)
+#define CV_EXPORTS __declspec(dllexport)
+#elif defined __GNC__ && __GNC__ >= 4
+#define CV_EXPORTS __attribute__((visibility("default")))
+#else
+#define CV_EXPORTS
+#endif
+
+
+#ifndef CV_INLINE
+# if defined __cplusplus
+#define CV_INLINE static inline
+#elif defined __MSC_VER
+#define CV_INLINE __inline
+#else
+#define CV_INLINE static
+#endif
+#endif
+
+#ifndef CV_EXTERN_C
+#ifdef __cplusplus
+#define CV_EXTERN_C extern "C"
+#else 
+#define CV_EXTERN_C
+#endif
+#endif
+
+
+#define CV_EXPORTS_W CV_EXPORTS
+#define CV_EXPORTS_W_SIMPLE CV_EXPORTS
+#define CV_IN_OUT
+#define CV_OUT
+
+#define CV_PI 3.1415926
+
+
+
+
+#Photoshop image blending
+#define ChannelBlend_Normal(A,B)     ((uint8)(A))
+#define ChannelBlend_Lighten(A,B)    ((uint8)((B > A) ? B:A))
+#define ChannelBlend_Darken(A,B)     ((uint8)((B > A) ? A:B))
+#define ChannelBlend_Multiply(A,B)   ((uint8)((A * B) / 255))
+#define ChannelBlend_Average(A,B)    ((uint8)((A + B) / 2))
+#define ChannelBlend_Add(A,B)        ((uint8)(min(255, (A + B))))
+#define ChannelBlend_Subtract(A,B)   ((uint8)((A + B < 255) ? 0:(A + B - 255)))
+#define ChannelBlend_Difference(A,B) ((uint8)(abs(A - B)))
+#define ChannelBlend_Negation(A,B)   ((uint8)(255 - abs(255 - A - B)))
+#define ChannelBlend_Screen(A,B)     ((uint8)(255 - (((255 - A) * (255 - B)) >> 8)))
+#define ChannelBlend_Exclusion(A,B)  ((uint8)(A + B - 2 * A * B / 255))
+#define ChannelBlend_Overlay(A,B)    ((uint8)((B < 128) ? (2 * A * B / 255):(255 - 2 * (255 - A) * (255 - B) / 255)))
+#define ChannelBlend_SoftLight(A,B)  ((uint8)((B < 128)?(2*((A>>1)+64))*((float)B/255):(255-(2*(255-((A>>1)+64))*(float)(255-B)/255))))
+#define ChannelBlend_HardLight(A,B)  (ChannelBlend_Overlay(B,A))
+#define ChannelBlend_ColorDodge(A,B) ((uint8)((B == 255) ? B:min(255, ((A << 8 ) / (255 - B)))))
+#define ChannelBlend_ColorBurn(A,B)  ((uint8)((B == 0) ? B:max(0, (255 - ((255 - A) << 8 ) / B))))
+#define ChannelBlend_LinearDodge(A,B)(ChannelBlend_Add(A,B))
+#define ChannelBlend_LinearBurn(A,B) (ChannelBlend_Subtract(A,B))
+#define ChannelBlend_LinearLight(A,B)((uint8)(B < 128)?ChannelBlend_LinearBurn(A,(2 * B)):ChannelBlend_LinearDodge(A,(2 * (B - 128))))
+#define ChannelBlend_VividLight(A,B) ((uint8)(B < 128)?ChannelBlend_ColorBurn(A,(2 * B)):ChannelBlend_ColorDodge(A,(2 * (B - 128))))
+#define ChannelBlend_PinLight(A,B)   ((uint8)(B < 128)?ChannelBlend_Darken(A,(2 * B)):ChannelBlend_Lighten(A,(2 * (B - 128))))
+#define ChannelBlend_HardMix(A,B)    ((uint8)((ChannelBlend_VividLight(A,B) < 128) ? 0:255))
+#define ChannelBlend_Reflect(A,B)    ((uint8)((B == 255) ? B:min(255, (A * A / (255 - B)))))
+#define ChannelBlend_Glow(A,B)       (ChannelBlend_Reflect(B,A))
+#define ChannelBlend_Phoenix(A,B)    ((uint8)(min(A,B) - max(A,B) + 255))
+#define ChannelBlend_Alpha(A,B,O)    ((uint8)(O * A + (1 - O) * B))
+#define ChannelBlend_AlphaF(A,B,F,O) (ChannelBlend_Alpha(F(A,B),A,O))
+
+
+
+#############################################
+//opencv mask operation
+
+addWeighted : dst = src1 * alpha + (1-alpha) * src2 + gamma
+
+bitwise_not / and / XOR  / OR
+
+
+//opencv convenient opearation
+
+// reverse the order of the row, column or both in matrix
+CV_EXPORTS_W void flip(InputArray src, OutputArray dst, int filpCode);
+
+// replicates the input matrix the specified numbers of times in horizontal or vertical  direction
+
+CV_EXPORTS_W void repeat(InputArray src, int nx, int ny, OutputArray);
+
+CV_EXPORTS_W void hconcat(const Mat* src, size_t nsrc, OutputArray dst);
+
+CV_EXPORTS_W void vConcat(InputArrayofArray src, OutputArray dst);
+
+
+// sorts independently each matrix row or each matrix column
+
+enum 
+{
+	SORT_EVERY_ROW = 0,
+	SORT_EVERY_COLUMN,
+	SORT_ASCEDING = 0,
+	SORT_DESCEDING = 16
+}
+CV_EXPORTS void sort(InputArray src, OutputArray dst, int flags);
+
+
+//Forms a border around an image. The function copies the source image into the middle of the destination image. The areas to the left, to the right, above and below the copied source images will be filled with extrapolated pixels.
+void copyMakeBorder(InputArray src, OutputArray dst, int top, int left, int bottom, int right...);
+
+
+//Performs advanced morphological transformations
+void morphologyEx(InputArray src, OutputArray, in op, InputArray kernel, Point anchor = Point(-1, -1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+
+开闭都是对亮的元素来说的。先腐蚀，去掉了高亮的细节部分，在膨胀，就相当于断开了。先膨胀再腐蚀，原来的空洞被填充。
+
+
+// Any of the operations can be done in-place. In case of multi-channel images, each channel is processed independently.
+
+
+// Calculates the integral of an image.
+
+void integral(InputArray src, OutputArray sum, OutputArray titled, int sdepth = -1);
+
+//Using these integral images, you can calculate sum, mean, and standard deviation over specific up-right or rotated rectangular region of the image in a constant time.
+
+// It makes possible to do a fast blurring or fast block correlation with a variable window size, for example multi-channel images, sums for each channel are accumulated independently.
+
+
+
+static const float sRGB2XYZ_D65[] = 
+{
+	
+};

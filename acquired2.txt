@@ -56,3 +56,34 @@ Second, we cannot work with something that spreads endlessly to the left and to 
 There is a problem every windowed filter deals with. Being placed at the edge filter window lacks for data elements to be processed. There are two ways to solve the problem: first is not to process edges and second, clever one, to extend data across edges. 
 
 Window is just a stencil or pattern, by means of which you are selecting the element neighborhood to help you make decision. Another name for filter window is mask, mask is a stencil, which hide elements we are not paying attention to.
+
+
+Several decisions were made early on in the product design stage: The product should be aimed at users with limited artistic skills(non-professionals)thereby widening the potential user-base. At the same time, the user experience should be more engaging than a mere one-click(fully automatic)algortim, thereby keeping the users interested and locked-in.
+
+They felt like they had 'created' the resulting image, often neglecting the fact that a lot of work had been done for them by the software.
+
+Traditionally, much of academic NPR research is dedicated to the class of automatic style reproduction systems. Yet, very few true artists find use for those works, because they generally do not seek an automated solution. Instead, they want fine control not only of the final end product, but also of the creative process along the way. In essence, they want to express their creativity through artistic means, and while digital art creation tools are a convenient way of achieving this, fully automatic style reproduction systems often take away too much control.
+
+Scale-space theory is a framework for multi-scale signal representation developed by the computer vision, image processing. It is a formal theory for handling image structures at different scales, by representing an images as one-parameter family of smoothed image, the scale-space representation, parameterized by the size of smoothing kernel used for suppressing fine-scale structure.
+
+
+IPOL journal: Image processing On line
+
+IPOL is a research journal of image processing and image analysis. Each article contains a text on an algorithm and its source code, with an online demonstration facility and an archive of experiments.
+
+
+
+Image compression may be lossy or lossless. Lossless compression is preferred for archival purposes and often for medical imaging, technical drawings, clip art, or comics. Lossy compression methods, especially when used at low bit rates, introduce compression antifacts. Lossy methods are especially suitable for natural images such as photographs in applications where minor(sometimes impercetible) loss of fidelity  is acceptable to achieve a substantial reduction in bit rate. The loosy compression that produces imperceptible differences may be called visually lossless.
+
+
+Artistic rendering of portraits can be viewed as an image generating process controlled by two factors. The
+first one is fidelity, meaning a rendered portrait image should preserve a certain amount of the original face's information. The second factor is the artistic style chosen to simulate different media such as sketch and painting.
+
+
+Halftone is the reprographic technique that simulates continuous tone imagery through the use of dots, varying either in size or in spacing, thus generating a gradient like effect. halftone can be also used to refer specifically to the image that is produced by this process.
+
+this reproduction relies on a basic optical illusion: tiny halftone dots are blended into smooth tones by the human eye.
+
+As a duotone, the image is created as a mix of two colors- hence its name duotone. Typically the colors are black and a spot color but they can be two colos.
+
+
