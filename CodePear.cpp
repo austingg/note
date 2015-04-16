@@ -1714,3 +1714,92 @@ static const float sRGB2XYZ_D65[] =
 {
 	
 };
+
+
+Width = Bitmap.Width; Height = Bitmap.Height; Stride = Bitmap.Stride;
+NewHeight = Height + 2;
+NewStride = (Width + 2) * BytePerPixel;
+ExpandPtr = (byte*)Win32Api.GlobalAlloc(Win32Const.GPTR, NewStride*NewHeight);
+
+Utility.GetExpandImage(Bitmap, 1, ExpandPtr);
+
+for (int Y = 0; i < Height; ++Y)
+{
+	Pointer = Bitmap.Pointer + Y*Stride;
+	ExpandP = ExpandPtr + (Y+1)*NewStride + 1;
+
+	for (int X = 0; X < Width; ++X)
+	{
+		HighPass = (ExpandP[x] << 2) - Expandp[x-1] - Expandp[X+1] - ExpandP[X-NewStride]-ExpandP[X+NewStride];
+
+		Value = Pointer[X] + Amount*HighPass/100;
+	}
+}
+
+
+
+# color level adjustment
+typedef struct 
+{
+	uchar Shadow;
+	float Midtone;
+	uchar Highlight;
+	uchar OutShadow;
+	uchar OutHighlight;
+}ColorLevelItem, *PColorLevelItem;
+
+
+typedef struct 
+{
+	ColorLevelItem Blue;
+	ColorLevelItem Green;
+	ColorLevelItem Red;
+	ColorLevelItem RGB;
+}ColorLeveData, *PColorLevelData;
+
+// p-Tile threshold
+
+public static int GetPTileThreshold(int HistGram, int Tile = 50)
+{
+	int Y, Amount = 0, Sum = 0;
+
+	for (int Y = 0; Y < 256; ++Y)
+	{
+		Amount  += HistGram[Y];
+	}
+
+	for (int Y = 0; i < 255; ++Y)
+	{
+		Sum += HistGram[Y];
+		if (Sum >= Amount *Tile/100)
+		{
+			break;
+		}
+	}
+}
+
+
+public static double GetColorCastFactor(Bitmap Bmp)
+{
+	if (Bmp.PixelFormat != PixelFormat.Format24bppRgb) throw new ArgumentException("Only Support PixelFormat24RGB format Image.");
+	Bitmap Lab = new Bigmap(Bmp.Width, Bmp.Height, PixelFormat.Format24bppRgb);
+
+	int X, Y;
+	int Width, Height, Stride;
+	BitmapData BmpData, LabData;
+
+	byte* Pointer;
+	int Suma = 0, SumB = 0;
+	double MsqA = 0, MsqB = 0, AvgA, AvgB;
+	int A, B;
+
+	int[] HistA = new int[256];
+	int[] HistB = new int[256];
+
+	BmpData = Bmp.LockBits(new Rectangle(0, 0, Bmp.Width, Bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+	Labdata = Lab.LockBits(new Rectangle(0, 0, Lab.Width, Lab.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+	Width = Bmp.Widht; Height = Bmp.Height;
+
+	for(Y = 0; Y < )
+}

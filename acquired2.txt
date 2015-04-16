@@ -87,3 +87,9 @@ this reproduction relies on a basic optical illusion: tiny halftone dots are ble
 As a duotone, the image is created as a mix of two colors- hence its name duotone. Typically the colors are black and a spot color but they can be two colos.
 
 
+# 每个人都有自己的特点， 所以这个导引更多的是为了 印发读者的思考， 最终帮助读者形成适合自己的学习路线。
+没有推动力的人是无法在略显枯燥的漫长学习之旅中走远的。
+
+沉醉于编程，编程是为了兴趣。兴趣是推动力的不竭源泉，保持这种充满兴趣的感觉， 一遍你能将其投入到你10年的编程时间中。编程很有趣，是探索的喜悦，是创造的喜悦。
+
+not only know how, but also what
