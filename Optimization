@@ -1,0 +1,77 @@
+Optimization
+============
+
+Optimization plays an increasingly important role in machine learning. For instance, many machine learning algorithms minimize a regularized risk functional.
+
+This chapter provides a self-contained overview of some basic concepts and tools from optimization, especially geared towards solving machine learning problems. In terms of concepts, we will cover topics related to convexity, duality, and Largrange multipliers. In terms of tools, we will cover a variety of optimization algorithms including gradient descent, stochasitc gradient descent, Newton's method, and Quasi-Newton methods. We will also look at some sepcialized alogritms tailored towards solving Linear Programming and Quadratic Programming problems which often arise in machine learning problems.
+
+#Preliminaries
+
+Minimzing an arbitrary function is, in genral, very difficult, but if the objective function to be minimized is convex then things become considerably simpler. As we will see shortly, the key advantage of dealing with convex functions is that a local optima is also the global optima.
+
+
+# gradient
+标量场的梯度是一个向量场。标量场中某一点的梯度是指标量场中增长最快的方向，梯度的长度是这个最大变化率。更严格的是，从欧几里得空间产生的梯度，是某一点的最贱线性近似。符号下三角。
+
+# divergence
+用于表征空间各点向量场发散的强弱程度，物理上散度的意义是场的有源性。符号下三角+点乘
+
+# laplacian
+拉布拉斯算子算子是n维欧几里得空间的一个二阶微分算子，定义为梯度的散度。符号上三角。f的拉普拉斯算子也是笛卡尔坐标系下所有非混合二阶偏导数的和。梯度的点积。
+
+# Approximate Gaussian filtering using integral filters
+
+This function approximates Gaussian filtering by repeatedly applying averageing filters. The averaging is performed via integral images which results in a fixed and very low computational cost that is independent of the Gaussian size.
+
+Notes:
+1. The desired standard deviation will not be achieved exactly. A combination of different sized averaging filters are applied to approximate it as closely as possible. 
+2. Values of sigma less than about 1.8 cannot be well approximated by repeated averaging. For sigma <
+1.8 the smoothing is performed using conventional gaussian convolution.
+
+
+# Newton's method
+* However, the method requires computing the Hessian matrix at each iteration - this is not always feasible.
+* If the problem size is large and the Hessian matrix is dense then it may be infeasible/inconvenient to compute it directly.
+* Quasi-Newton methods avoid this problem by keeping a "rolling estimate" of H(x), updated at each iteration using a new gradient information.
+* In Matlab the optimatization function 'fminunc' use BFGS quasi-newton method formedium scale optimization problems.
+
+
+# Non-linear least squares
+* It is very common in applications for a cost function f(x) to be the sum of a large number of square residuals.
+* y(s, x) = x_0 + x_1*s + x_2*s^2 + ...   In this case the function is linear in the parameter X and there is a closed form solution. In general there will not be closed form soluton for non-linear function y(s, x)
+
+* Gauss-Newton Optimization	
+
+# Properties of methods
+* Gradient descent
+- Will zig-zag : each new increment is perpendicular to previous. 
+- Requires 1D search
+- Slow to converge.
+* Newton's method
+- requires computation of hessian
+- can converge to maximum or saddle as well as minimum
+- can be unstatble
+* Gauss-Newton
+- Is a downhill method, so will not converge to maximum or saddle.
+- can be unstatble, thus preferably needs line search.
+
+# Occam's Razor, Ockham's Razor
+> 如无必要，勿增实体。 大道至简。
+> 为什么要将复杂变简单呢？因为复杂容易使人迷失，只有简单化才利于人们理解和操作。
+> 过度地拟合数据会产生较大的参数，抖动的比较厉害，因此加入正则项（先验），对系数进行约束。
+
+# Conjugate gradient method
+
+In mathematics, the conjugate gradient method is an algorithm for the numerical solution of particular systems of linear equations, namely those whosematrix is symmetric and positive definite. The conjugate gradient method is often implemented as an iterative algorithm, applicable to sparse systems that are too large to be handled by a direct implementation or other direct medhods such as the Cholesky decomposition. Large sparse systems often arise when numerically solving partial differential equations or optimization problems.
+
+The conjugate gradient method can also be used to solve unconstrained optimization problems such as energy minimization. It was mainly developed by Magnus Hestenes and Eduard Stiefel.
+共轭梯度法(Conjugate Gradient)是介于最速下降法与牛顿法之间的一个方法， 他需要利用利用一阶导数信息，但克服了最速梯度下降收敛慢的确定啊，又避免了牛顿法需要存储和计算Hesse矩阵并求逆的缺点，共轭梯度法不仅是解决大型线性方程组最有用的方法之一，也是解决大型非线性最优化最有效的算法之一。在各种优化算法中，共轭梯度法是非常重要的一种，其优点是所需存储量小，具有步收敛性，稳定性高，而且不需要任何外来参数。
+
+# energy minimization
+
+In the field of compuational chemistry, energy minimization(also called energy optimization or geometry optimizaiton) is the process of finding an arranment in space of collection of atom.
+
+# Matrix calculus
+In mathematics, matrix calculus is specialized notation for doing multivariable calculus, especially over spaces of matrices. It collects the various partial derivatives of a single function with respect to many variables, and/or a multivariate function with respect to a single variable, into vectors and matrices that can be treated as single entities. This greatly simplifies operations such as finding the maximum or minimum of a multivariate function and solving system of differential equations. the notation used here is commonly used in statistics and engineering, while the tensor index is prefered in physics.
+
+Two competing notational convetions split the field of matrix calculus into two separate groups. The two groups can be distinguished by whether they write the derivative of a scalar wit respect to a vector as a column or as a row vector.

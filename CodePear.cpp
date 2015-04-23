@@ -230,7 +230,7 @@ struct SkMask
 		kCoutMaskFormat = LCD32_Format + 1;
 	}
 	
-	uint8_5* 	fImage;
+	uint8_8* 	fImage;
 	SkIRect		fBountds;
 	uint32_t 	fRowBytes;
 	Format 		fFormat;

@@ -93,3 +93,5 @@ As a duotone, the image is created as a mix of two colors- hence its name duoton
 沉醉于编程，编程是为了兴趣。兴趣是推动力的不竭源泉，保持这种充满兴趣的感觉， 一遍你能将其投入到你10年的编程时间中。编程很有趣，是探索的喜悦，是创造的喜悦。
 
 not only know how, but also what
+
+
