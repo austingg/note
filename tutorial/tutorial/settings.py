@@ -15,7 +15,7 @@ SPIDER_MODULES = ['tutorial.spiders']
 NEWSPIDER_MODULE = 'tutorial.spiders'
 
 ITEM_PIPELINES = {'tutorial.pipelines.MyImagesPipeline': 1}
-IMAGES_STORE = 'E:\\tieba'
+IMAGES_STORE = 'E:\\search'
 
 DOWNLOAD_DELAY = 0.25
 

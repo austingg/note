@@ -19,4 +19,5 @@ class DmozItem(scrapy.Item):
 
 class BaiDuTieBaItem(scrapy.Item):
     image_urls = scrapy.Field()
+    image_paths = scrapy.Field()
 
