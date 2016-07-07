@@ -21,3 +21,7 @@ class BaiDuTieBaItem(scrapy.Item):
     image_urls = scrapy.Field()
     image_paths = scrapy.Field()
 
+
+class BaiDuImageSearchItem(scrapy.Item):
+    image_urls = scrapy.Field()
+    image_paths = scrapy.Field()

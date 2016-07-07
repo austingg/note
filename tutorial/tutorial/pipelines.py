@@ -8,6 +8,7 @@ import scrapy
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exceptions import DropItem
 from tutorial.spiders.baidu_tieba_spider import BaiduTieBaSpider
+from tutorial.spiders.baidu_image_search_spider import BaiduImageSearchSpider
 
 
 class TutorialPipeline(object):
@@ -15,9 +16,26 @@ class TutorialPipeline(object):
         return item
 
 
-class MyImagesPipeline(ImagesPipeline):
+class TiebaImagesPipeline(ImagesPipeline):
     def file_path(self, request, response=None, info=None):
         image_name = BaiduTieBaSpider.image_names[request.url]
+        return image_name
+
+    def get_media_requests(self, item, info):
+        for image_url in item['image_urls']:
+            yield scrapy.Request(image_url)
+
+    def item_completed(self, results, item, info):
+        image_paths = [x['path'] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem("Item contains no images")
+        item['image_paths'] = image_paths
+        return item
+
+
+class SearchImagesPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        image_name = BaiduImageSearchSpider.image_names[request.url]
         return image_name
 
     def get_media_requests(self, item, info):

@@ -10,16 +10,16 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'tutorial'
-
 SPIDER_MODULES = ['tutorial.spiders']
 NEWSPIDER_MODULE = 'tutorial.spiders'
 
-ITEM_PIPELINES = {'tutorial.pipelines.MyImagesPipeline': 1}
-IMAGES_STORE = 'E:\\tree'
-IMAGES_MIN_HEIGHT = 256
-IMAGES_MIN_WIDTH = 256
+ITEM_PIPELINES = {'tutorial.pipelines.TiebaImagesPipeline': 20,
+                  'tutorial.pipelines.SearchImagesPipeline': 1}
+IMAGES_STORE = 'E:\\football shoes'
+IMAGES_MIN_HEIGHT = 180
+IMAGES_MIN_WIDTH = 180
 
-DOWNLOAD_DELAY = 0.25
+DOWNLOAD_DELAY = 0.3
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
