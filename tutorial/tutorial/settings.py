@@ -20,6 +20,7 @@ IMAGES_STORE = 'E:\\football shoes'
 # IMAGES_MIN_WIDTH = 180
 
 DOWNLOAD_DELAY = 0.1
+DOWNLOAD_TIMEOUT = 30
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
