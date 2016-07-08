@@ -5,7 +5,7 @@ from tutorial.items import BaiDuTieBaItem
 
 class BaiduTieBaSpider(scrapy.spiders.Spider):
     name = 'baidutieba'
-    start_urls = ['http://tieba.baidu.com/p/2235516502?see_lz=1&pn=%d' % i for i in range(1, 30)]
+    start_urls = ['http://tieba.baidu.com/p/2235513502?see_lz=1&pn=%d' % i for i in range(1, 30)]
 
     image_names = {}
 

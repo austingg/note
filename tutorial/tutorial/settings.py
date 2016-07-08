@@ -16,10 +16,10 @@ NEWSPIDER_MODULE = 'tutorial.spiders'
 ITEM_PIPELINES = {'tutorial.pipelines.TiebaImagesPipeline': 20,
                   'tutorial.pipelines.SearchImagesPipeline': 1}
 IMAGES_STORE = 'E:\\football shoes'
-IMAGES_MIN_HEIGHT = 180
-IMAGES_MIN_WIDTH = 180
+# IMAGES_MIN_HEIGHT = 180
+# IMAGES_MIN_WIDTH = 180
 
-DOWNLOAD_DELAY = 0.3
+DOWNLOAD_DELAY = 0.1
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -40,7 +40,7 @@ ROBOTSTXT_OBEY = False
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
