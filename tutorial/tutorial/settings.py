@@ -16,8 +16,8 @@ NEWSPIDER_MODULE = 'tutorial.spiders'
 ITEM_PIPELINES = {'tutorial.pipelines.TiebaImagesPipeline': 20,
                   'tutorial.pipelines.SearchImagesPipeline': 1}
 IMAGES_STORE = 'E:\\football shoes'
-# IMAGES_MIN_HEIGHT = 180
-# IMAGES_MIN_WIDTH = 180
+IMAGES_MIN_HEIGHT = 320
+IMAGES_MIN_WIDTH = 320
 
 DOWNLOAD_DELAY = 0.1
 DOWNLOAD_TIMEOUT = 30
