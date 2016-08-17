@@ -1,1 +1,3 @@
 /tutorial/.scrapy
+*.pyc
+*
