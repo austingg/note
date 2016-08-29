@@ -20,5 +20,25 @@ Paper Reading
 10. We do not used weight decay or dropout, as the model does not overfit within two epochs.
 11. Training takes roughly 4 hours on a single GTX Titan X GPU.
 12. Although our models are trained with 256x256 images, they can be applied in a fully convolutional manner to images of any size at test-time.
-13. Our style transfer networks are trained to preserve VGG-16 features, and in doing so they learn to preserve people and animals more than background objects.
+13. Our style transfer networks are trained to preserve VGG-16 features, and in doing so they learn to preserve people and animals more than background objects.V=
 14. Our method achieves a loss comparable to between 50 and 100 iterations of explicit optimization.
+
+
+# Learning Representations for Automatic Colorization (ECCV2016) [code](https://github.com/gustavla/autocolorize) 
+1. code, pip install, github
+2. related work
+    * Colorful Image Colorization. ECCV2016
+    * Let there be color! SIGGRAPH 2016
+    * Automatic Colorization 
+    * learning large-Scale automatic image colorization. ICCV 2015
+    * Deep colorization. ICCV 2015
+
+
+# Learning Deep Features for Discriminative Localization (CVPR2016) [code]()
+
+
+# Deep Hashing for compact binary codes learning. CVPR. 2015
+
+# Region-based semantic segmentation with end-to-end training. ECCV2016
+
+# Beyond Correlation Filters: learning Continuous Convolution Operators for Visual Tracking. [project](http://www.cvl.isy.liu.se/en/research/objrec/visualtracking/conttrack/index.html)
