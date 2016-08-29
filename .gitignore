@@ -1,6 +1,5 @@
 /tutorial/.scrapy
 *.pyc
-*
 /acquired.cpp
 /acquired2.txt
 /caffenet.py
