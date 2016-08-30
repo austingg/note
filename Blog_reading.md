@@ -16,3 +16,4 @@ Blob Reading
         - Adjust the class weight (misclassication costs)
         - Adjust the decision threshold
         - Modify an existing algorithm to be more sensitive to rare classes.
+
