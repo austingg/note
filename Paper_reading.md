@@ -42,3 +42,20 @@ Paper Reading
 # Region-based semantic segmentation with end-to-end training. ECCV2016
 
 # Beyond Correlation Filters: learning Continuous Convolution Operators for Visual Tracking. [project](http://www.cvl.isy.liu.se/en/research/objrec/visualtracking/conttrack/index.html)
+
+
+# Deep Face Recognition VGG 2015
+1. In the world of face recognition, however, large scale public datasets have been lacking and, laragely duto this factor, most of the recent advances in the community remain restricted to Internet giants sush as Facebook and Google. 
+2. Mainly contribution:
+    * construct dataset 
+    * investigate various CNN architectures for face identification and verification, including exploring face alignment and metric learnig, using the novel dataset for training.
+3. After learning, the classifier layer can be removed and the score vector can be used for face identity verification using the Euclidean distance to compare them. However, the scores can be significantly improved by tuning them for verification in Euclidean space using a triplet loss training scheme.
+4. Triplet loss training aims at learning score vectors that perform well in the final application, identity verification by comparing face descriptors in Euclidean space.
+5. 2D similarity transformation is applied to map the face to a canonical position
+6. There are probably two reasons for this: first it is better to have more data, even with label noise, second, a more subtle point, some of the hard positives present in the stage 3 data get removed as a side effect of the curation process.
+7. Alignment: As can be seen from the Table, using 2D alignment on test images does improve the performance, but performing 2D alignment on the training data does not provide an additional boost.
+8. Triplet-loss embedding: Learning a discriminative metric by minimising the triplet loss of Section 4.2 further improves performance by 1.8%. Note that this amounts to reducing the error rate by 68%.
+
+
+# What makes ImageNet good for transfer learning ? 20160830
+1. How many pre-training ImageNet examples are sufficient for transfer learning?
